@@ -9,7 +9,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { useDataStore, useAuthStore } from '@/store';
-import { formatDateTime, getRoleName } from '@/lib/utils';
+import { formatDateTime, getRoleName, getActionName } from '@/lib/utils';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -61,7 +61,7 @@ export default function DashboardPage() {
             value={todayDocuments.length}
             subtitle="ไฟล์"
             icon={FileText}
-            variant="info"
+            variant="accent"
           />
           <StatCard
             title="เอกสารทั้งหมด"
@@ -162,12 +162,7 @@ export default function DashboardPage() {
                                 : 'default'
                             }
                           >
-                            {log.action === 'login' && 'เข้าสู่ระบบ'}
-                            {log.action === 'view' && 'ดูเอกสาร'}
-                            {log.action === 'upload' && 'อัปโหลด'}
-                            {log.action === 'move' && 'ย้ายเอกสาร'}
-                            {log.action === 'edit' && 'แก้ไข'}
-                            {log.action === 'delete' && 'ลบ'}
+                            {getActionName(log.action)}
                           </Badge>
                         </TableCell>
                         <TableCell>{log.userId}</TableCell>
@@ -257,7 +252,7 @@ export default function DashboardPage() {
           <CardBody>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-[#002d73] rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-brand rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-lg">
                     {currentUser?.fullName?.charAt(0) || 'U'}
                   </span>

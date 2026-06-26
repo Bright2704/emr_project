@@ -28,7 +28,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
+    <header className="bg-white/90 backdrop-blur-sm border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-30">
       <div className="text-gray-600 text-sm">
         ระบบจัดเก็บและเรียกดูเอกสารสแกนผู้ป่วย
       </div>
@@ -37,7 +37,7 @@ export default function Header() {
         {/* Date & Time */}
         <div className="text-right">
           <div className="text-xs text-gray-500">{formatThaiDate(currentTime)}</div>
-          <div className="text-sm font-medium text-[#002d73]">
+          <div className="text-sm font-medium text-brand tabular-nums">
             {currentTime.toLocaleTimeString('th-TH')} น.
           </div>
         </div>
@@ -48,7 +48,7 @@ export default function Header() {
             onClick={() => setShowDropdown(!showDropdown)}
             className="flex items-center gap-2 hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors"
           >
-            <div className="w-8 h-8 bg-[#002d73] rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-brand rounded-full flex items-center justify-center">
               <User size={16} className="text-white" />
             </div>
             <div className="text-left">

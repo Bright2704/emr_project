@@ -56,9 +56,9 @@ export default function SetupPinPage() {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-sm overflow-hidden">
         {/* Header */}
-        <div className="bg-[#002d73] px-6 py-5 text-center">
+        <div className="bg-brand px-6 py-5 text-center">
           <div className="w-14 h-14 bg-white rounded-lg mx-auto mb-3 flex items-center justify-center">
-            <Plus className="w-8 h-8 text-[#002d73]" strokeWidth={3} />
+            <Plus className="w-8 h-8 text-brand" strokeWidth={3} />
           </div>
           <h1 className="text-white text-lg font-bold">ตั้งค่าครั้งแรก</h1>
           <p className="text-blue-200 text-sm">สวัสดี {currentUser.fullName}</p>
@@ -74,7 +74,7 @@ export default function SetupPinPage() {
                     index < currentStepIndex
                       ? 'bg-green-500 text-white'
                       : index === currentStepIndex
-                      ? 'bg-[#002d73] text-white'
+                      ? 'bg-brand text-white'
                       : 'bg-gray-200 text-gray-500'
                   }`}
                 >

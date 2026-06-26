@@ -14,22 +14,16 @@ import {
   X,
   Loader2,
   Settings2,
-  Droplets,
-  Scan,
-  Stethoscope,
-  Pill,
-  ClipboardCheck,
-  HeartPulse,
-  FolderOpen,
 } from 'lucide-react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
-import { Input, Select } from '@/components/ui/Input';
+import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { useDataStore, useAuthStore } from '@/store';
 import { formatDate, cn } from '@/lib/utils';
+import { CategoryIcon, CATEGORY_GROUPS, getCategoryMeta } from '@/lib/categories';
 
 function ScanContent() {
   const router = useRouter();
@@ -82,33 +76,6 @@ function ScanContent() {
   const currentScanner = defaultScanner
     ? availableScanners.find(s => s.id === defaultScanner)
     : null;
-
-  // Category icon helper
-  const getCategoryIcon = (categoryId: string, size: number = 20) => {
-    const icons: Record<string, React.ReactNode> = {
-      'cat-1': <Droplets size={size} />,
-      'cat-2': <Scan size={size} />,
-      'cat-3': <Stethoscope size={size} />,
-      'cat-4': <Pill size={size} />,
-      'cat-5': <ClipboardCheck size={size} />,
-      'cat-6': <HeartPulse size={size} />,
-      'cat-7': <FolderOpen size={size} />,
-    };
-    return icons[categoryId] || <FileText size={size} />;
-  };
-
-  const getCategoryColor = (categoryId: string) => {
-    const colors: Record<string, string> = {
-      'cat-1': 'text-red-500 bg-red-100',
-      'cat-2': 'text-purple-500 bg-purple-100',
-      'cat-3': 'text-blue-500 bg-blue-100',
-      'cat-4': 'text-green-500 bg-green-100',
-      'cat-5': 'text-orange-500 bg-orange-100',
-      'cat-6': 'text-pink-500 bg-pink-100',
-      'cat-7': 'text-gray-500 bg-gray-100',
-    };
-    return colors[categoryId] || 'text-gray-500 bg-gray-100';
-  };
 
   // Check URL params
   useEffect(() => {
@@ -269,13 +236,13 @@ function ScanContent() {
                       isComplete
                         ? 'bg-green-500 text-white'
                         : isActive
-                        ? 'bg-[#002d73] text-white'
+                        ? 'bg-brand text-white'
                         : 'bg-gray-200 text-gray-500'
                     )}
                   >
                     {isComplete ? <CheckCircle size={20} /> : index + 1}
                   </div>
-                  <span className={cn('text-xs mt-1', isActive ? 'text-[#002d73] font-medium' : 'text-gray-500')}>
+                  <span className={cn('text-xs mt-1', isActive ? 'text-brand font-medium' : 'text-gray-500')}>
                     {label}
                   </span>
                 </div>
@@ -364,7 +331,7 @@ function ScanContent() {
             <CardBody className="space-y-4">
               <div className="bg-blue-50 rounded-lg p-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-[#002d73] rounded-full flex items-center justify-center">
+                  <div className="w-16 h-16 bg-brand rounded-full flex items-center justify-center">
                     <span className="text-white font-bold text-2xl">
                       {patient.firstName.charAt(0)}
                     </span>
@@ -440,7 +407,7 @@ function ScanContent() {
                         className={cn(
                           'p-4 border rounded-lg cursor-pointer transition-colors',
                           selectedVisit === visit.id
-                            ? 'border-[#002d73] bg-blue-50'
+                            ? 'border-brand bg-blue-50'
                             : 'hover:bg-gray-50'
                         )}
                         onClick={() => setSelectedVisit(visit.id)}
@@ -490,14 +457,14 @@ function ScanContent() {
                           className={cn(
                             'w-full p-8 border-2 border-dashed rounded-lg text-center transition-colors',
                             isScanning
-                              ? 'border-[#002d73] bg-blue-50'
-                              : 'border-gray-300 hover:border-[#002d73] hover:bg-gray-50'
+                              ? 'border-brand bg-blue-50'
+                              : 'border-gray-300 hover:border-brand hover:bg-gray-50'
                           )}
                         >
                           {isScanning ? (
                             <>
-                              <Loader2 size={48} className="mx-auto mb-3 text-[#002d73] animate-spin" />
-                              <p className="font-medium text-[#002d73]">กำลังสแกน...</p>
+                              <Loader2 size={48} className="mx-auto mb-3 text-brand animate-spin" />
+                              <p className="font-medium text-brand">กำลังสแกน...</p>
                               <p className="text-sm text-gray-500">
                                 {currentScanner ? currentScanner.name : 'กรุณารอสักครู่'}
                               </p>
@@ -516,7 +483,7 @@ function ScanContent() {
                         {!isScanning && (
                           <button
                             onClick={handleOpenScannerModal}
-                            className="w-full flex items-center justify-center gap-1 text-sm text-gray-500 hover:text-[#002d73] transition-colors"
+                            className="w-full flex items-center justify-center gap-1 text-sm text-gray-500 hover:text-brand transition-colors"
                           >
                             <Settings2 size={14} />
                             {currentScanner ? 'เปลี่ยนเครื่องสแกน' : 'ตั้งค่าเครื่องสแกน'}
@@ -527,7 +494,7 @@ function ScanContent() {
                       {/* Upload Button */}
                       <button
                         onClick={() => fileInputRef.current?.click()}
-                        className="p-8 border-2 border-dashed rounded-lg text-center border-gray-300 hover:border-[#002d73] hover:bg-gray-50 transition-colors"
+                        className="p-8 border-2 border-dashed rounded-lg text-center border-gray-300 hover:border-brand hover:bg-gray-50 transition-colors"
                       >
                         <Upload size={48} className="mx-auto mb-3 text-gray-400" />
                         <p className="font-medium text-gray-700">อัปโหลดไฟล์</p>
@@ -553,7 +520,7 @@ function ScanContent() {
                             className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                           >
                             <div className="flex items-center gap-3">
-                              <FileText size={20} className="text-[#002d73]" />
+                              <FileText size={20} className="text-brand" />
                               <span>{file.name}</span>
                               <span className="text-sm text-gray-500">
                                 ({(file.size / 1024).toFixed(1)} KB)
@@ -580,44 +547,55 @@ function ScanContent() {
                       <h2 className="text-lg font-semibold text-gray-800">เลือกหมวดหมู่เอกสาร</h2>
                     </CardHeader>
                     <CardBody>
-                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                        {categories.filter((c) => c.isActive).map((category) => {
-                          const isSelected = selectedCategory === category.id;
-
-                          const borderColorMap: Record<string, string> = {
-                            'cat-1': 'border-red-200 hover:border-red-400',
-                            'cat-2': 'border-purple-200 hover:border-purple-400',
-                            'cat-3': 'border-blue-200 hover:border-blue-400',
-                            'cat-4': 'border-green-200 hover:border-green-400',
-                            'cat-5': 'border-orange-200 hover:border-orange-400',
-                            'cat-6': 'border-pink-200 hover:border-pink-400',
-                            'cat-7': 'border-gray-200 hover:border-gray-400',
-                          };
-
+                      <div className="space-y-5">
+                        {CATEGORY_GROUPS.map((group) => {
+                          const groupCats = categories.filter(
+                            (c) => c.isActive && getCategoryMeta(c.id).group === group.id
+                          );
+                          if (groupCats.length === 0) return null;
                           return (
-                            <button
-                              key={category.id}
-                              onClick={() => setSelectedCategory(category.id)}
-                              className={cn(
-                                'p-4 border-2 rounded-xl text-center transition-all active:scale-95',
-                                isSelected
-                                  ? 'border-[#002d73] bg-blue-50 ring-2 ring-[#002d73] ring-offset-2'
-                                  : `bg-white ${borderColorMap[category.id] || 'border-gray-200 hover:border-gray-400'}`
-                              )}
-                            >
-                              <div className={cn(
-                                'w-14 h-14 mx-auto mb-2 rounded-full flex items-center justify-center',
-                                isSelected ? 'bg-[#002d73] text-white' : getCategoryColor(category.id)
-                              )}>
-                                {getCategoryIcon(category.id, 28)}
-                              </div>
-                              <p className={cn(
-                                'text-sm font-medium leading-tight',
-                                isSelected ? 'text-[#002d73]' : 'text-gray-700'
-                              )}>
-                                {category.name}
+                            <div key={group.id}>
+                              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
+                                {group.label}
                               </p>
-                            </button>
+                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                {groupCats.map((category) => {
+                                  const isSelected = selectedCategory === category.id;
+                                  const meta = getCategoryMeta(category.id);
+                                  const Icon = meta.icon;
+                                  return (
+                                    <button
+                                      key={category.id}
+                                      onClick={() => setSelectedCategory(category.id)}
+                                      aria-pressed={isSelected}
+                                      className={cn(
+                                        'group flex items-center gap-3 rounded-xl border p-3 text-left transition-all active:scale-[0.98]',
+                                        isSelected
+                                          ? 'border-brand bg-brand-50 ring-2 ring-brand/30'
+                                          : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
+                                      )}
+                                    >
+                                      <span
+                                        className={cn(
+                                          'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors',
+                                          isSelected ? 'bg-brand text-white' : cn(meta.bg, meta.fg)
+                                        )}
+                                      >
+                                        <Icon size={20} />
+                                      </span>
+                                      <span
+                                        className={cn(
+                                          'text-sm font-medium leading-snug',
+                                          isSelected ? 'text-brand' : 'text-gray-700'
+                                        )}
+                                      >
+                                        {category.name}
+                                      </span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
                           );
                         })}
                       </div>
@@ -676,12 +654,7 @@ function ScanContent() {
                 <div className="flex justify-between items-center py-2 border-b">
                   <span className="text-gray-500">หมวดเอกสาร:</span>
                   <div className="flex items-center gap-2">
-                    <div className={cn(
-                      'w-8 h-8 rounded-full flex items-center justify-center',
-                      getCategoryColor(selectedCategory)
-                    )}>
-                      {getCategoryIcon(selectedCategory, 16)}
-                    </div>
+                    <CategoryIcon categoryId={selectedCategory} size={16} className="h-8 w-8" />
                     <span className="font-medium">
                       {categories.find((c) => c.id === selectedCategory)?.name}
                     </span>
@@ -778,7 +751,7 @@ function ScanContent() {
                   scanner.status === 'offline'
                     ? 'bg-gray-50 opacity-60 cursor-not-allowed'
                     : selectedScanner === scanner.id
-                    ? 'border-[#002d73] bg-blue-50 cursor-pointer'
+                    ? 'border-brand bg-blue-50 cursor-pointer'
                     : 'hover:bg-gray-50 cursor-pointer'
                 )}
               >
@@ -786,7 +759,7 @@ function ScanContent() {
                   <div className="flex items-center gap-3">
                     <div className={cn(
                       'w-10 h-10 rounded-full flex items-center justify-center',
-                      scanner.status === 'online' ? 'bg-[#002d73]' : 'bg-gray-300'
+                      scanner.status === 'online' ? 'bg-brand' : 'bg-gray-300'
                     )}>
                       <ScanLine size={20} className="text-white" />
                     </div>

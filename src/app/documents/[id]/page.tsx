@@ -19,6 +19,10 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { useDataStore } from '@/store';
 import { formatDate, formatDateTime } from '@/lib/utils';
+import { ImageAnnotator } from '@/components/case/ImageAnnotator';
+import { DocumentComments } from '@/components/case/DocumentComments';
+import { RiskBanner } from '@/components/case/RiskFlags';
+import { CategoryBadge } from '@/lib/categories';
 
 export default function DocumentViewerPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -94,6 +98,9 @@ export default function DocumentViewerPage({ params }: { params: Promise<{ id: s
           </div>
         </div>
 
+        {/* Risk alert */}
+        <RiskBanner patientId={patient.id} />
+
         <div className="grid grid-cols-4 gap-4">
           {/* Document Info Panel */}
           <Card className="col-span-1 no-print">
@@ -111,7 +118,7 @@ export default function DocumentViewerPage({ params }: { params: Promise<{ id: s
                   </div>
                   <div>
                     <p className="text-gray-500">หมวดหมู่</p>
-                    <Badge>{category?.name || 'ไม่ระบุ'}</Badge>
+                    <CategoryBadge categoryId={document.categoryId} name={category?.name || 'ไม่ระบุ'} />
                   </div>
                   <div>
                     <p className="text-gray-500">อัปโหลดเมื่อ</p>
@@ -129,7 +136,7 @@ export default function DocumentViewerPage({ params }: { params: Promise<{ id: s
               <div>
                 <h3 className="font-semibold text-gray-800 mb-3">ข้อมูลผู้ป่วย</h3>
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-[#002d73] rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-brand rounded-full flex items-center justify-center">
                     <User size={20} className="text-white" />
                   </div>
                   <div>
@@ -166,23 +173,21 @@ export default function DocumentViewerPage({ params }: { params: Promise<{ id: s
                   {visit.visitType === 'OPD' ? 'ผู้ป่วยนอก' : 'ผู้ป่วยใน'}
                 </Badge>
               </div>
+
+              <hr />
+
+              <DocumentComments documentId={document.id} />
             </CardBody>
           </Card>
 
-          {/* Document Viewer */}
-          <Card className="col-span-3">
-            <CardBody className="min-h-[600px] flex items-center justify-center bg-gray-100">
-              <div
-                style={{
-                  transform: `scale(${zoom / 100}) rotate(${rotation}deg)`,
-                  transition: 'transform 0.3s ease',
-                }}
-              >
+          {/* Document Viewer + Annotations */}
+          <div className="col-span-3">
+            <ImageAnnotator documentId={document.id} zoom={zoom} rotation={rotation}>
                 {/* Mock Document Preview */}
                 <div className="bg-white shadow-lg rounded-lg p-8 w-[595px] min-h-[842px]">
                   {/* Header */}
                   <div className="text-center border-b pb-4 mb-4">
-                    <h1 className="text-xl font-bold text-[#002d73]">โรงพยาบาลตัวอย่าง</h1>
+                    <h1 className="text-xl font-bold text-brand">โรงพยาบาลตัวอย่าง</h1>
                     <p className="text-sm text-gray-500">Sample Hospital</p>
                   </div>
 
@@ -240,9 +245,8 @@ export default function DocumentViewerPage({ params }: { params: Promise<{ id: s
                     <p>รหัสเอกสาร: {document.id}</p>
                   </div>
                 </div>
-              </div>
-            </CardBody>
-          </Card>
+            </ImageAnnotator>
+          </div>
         </div>
       </div>
     </MainLayout>

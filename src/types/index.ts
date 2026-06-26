@@ -58,8 +58,88 @@ export interface ScanDocument {
   uploadedBy: string;
 }
 
+// Collaboration: Notes / Comments / Annotations / Risk Flags
+export type EntryStatus = 'active' | 'deleted';
+
+export interface EditHistoryEntry {
+  content: string; // snapshot of content before the edit
+  editedBy: string; // userId
+  editedAt: Date;
+}
+
+// Case-level note (per patient) — follow-up handoff between users
+export interface CaseNote {
+  id: string;
+  patientId: string;
+  content: string;
+  authorId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  editHistory: EditHistoryEntry[];
+  status: EntryStatus;
+}
+
+// Comment on a document/image
+export interface DocComment {
+  id: string;
+  documentId: string;
+  content: string;
+  authorId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  editHistory: EditHistoryEntry[];
+  status: EntryStatus;
+}
+
+// Risk / precaution flag (per patient)
+export type RiskSeverity = 'low' | 'medium' | 'high';
+
+export interface RiskFlag {
+  id: string;
+  patientId: string;
+  title: string;
+  detail: string;
+  severity: RiskSeverity;
+  authorId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  editHistory: EditHistoryEntry[];
+  status: EntryStatus;
+}
+
+// Image annotation (per document) — coords are normalized 0..100 of the image box
+export type AnnotationType = 'circle' | 'line' | 'highlight' | 'marker';
+
+export interface Annotation {
+  id: string;
+  documentId: string;
+  type: AnnotationType;
+  // geometry in a 0..100 coordinate space, type-dependent fields
+  geometry: {
+    x?: number; y?: number; // marker point / rect origin
+    w?: number; h?: number; // highlight rect size
+    cx?: number; cy?: number; r?: number; // circle
+    x1?: number; y1?: number; x2?: number; y2?: number; // line
+  };
+  color: string;
+  label?: string;
+  authorId: string;
+  createdAt: Date;
+  status: EntryStatus;
+}
+
 // Audit Log Types
-export type AuditAction = 'login' | 'view' | 'upload' | 'move' | 'edit' | 'delete';
+export type AuditAction =
+  | 'login'
+  | 'view'
+  | 'upload'
+  | 'move'
+  | 'edit'
+  | 'delete'
+  | 'note'
+  | 'comment'
+  | 'annotate'
+  | 'risk';
 
 export interface AuditLog {
   id: string;

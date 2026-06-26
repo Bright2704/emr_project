@@ -9,7 +9,10 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 import { useDataStore, useAuthStore } from '@/store';
-import { formatDate, formatDateTime, maskNationalId, calculateAge } from '@/lib/utils';
+import { formatDate, maskNationalId, calculateAge } from '@/lib/utils';
+import { CaseNotes } from '@/components/case/CaseNotes';
+import { RiskFlags, RiskBanner } from '@/components/case/RiskFlags';
+import { CategoryIcon } from '@/lib/categories';
 
 export default function PatientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -46,12 +49,15 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
           กลับ
         </Button>
 
+        {/* Risk alert */}
+        <RiskBanner patientId={patient.id} />
+
         {/* Patient Info */}
         <Card>
           <CardBody>
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-[#002d73] rounded-full flex items-center justify-center">
+                <div className="w-16 h-16 bg-brand rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-2xl">
                     {patient.firstName.charAt(0)}
                   </span>
@@ -61,7 +67,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
                     {patient.firstName} {patient.lastName}
                   </h1>
                   <div className="flex items-center gap-4 mt-1 text-gray-500">
-                    <span className="font-mono text-[#002d73] font-medium">{patient.hn}</span>
+                    <span className="font-mono text-brand font-medium">{patient.hn}</span>
                     <span>•</span>
                     <span>{formatDate(patient.dateOfBirth)} ({calculateAge(patient.dateOfBirth)} ปี)</span>
                   </div>
@@ -97,6 +103,12 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
           </CardBody>
         </Card>
 
+        {/* Risk flags + Case notes (collaboration) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <RiskFlags patientId={patient.id} />
+          <CaseNotes patientId={patient.id} />
+        </div>
+
         {/* Visits */}
         <Card>
           <CardHeader className="flex items-center justify-between">
@@ -122,7 +134,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
                     return (
                       <TableRow key={visit.id}>
                         <TableCell>
-                          <span className="font-mono font-medium text-[#002d73]">
+                          <span className="font-mono font-medium text-brand">
                             {visit.visitNo}
                           </span>
                         </TableCell>
@@ -194,11 +206,14 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
                   return (
                     <div
                       key={category.id}
-                      className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                      className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 cursor-pointer transition-colors"
                       onClick={() => router.push(`/documents?hn=${patient.hn}&category=${category.id}`)}
                     >
-                      <div className="text-2xl font-bold text-[#002d73]">{count}</div>
-                      <div className="text-sm text-gray-600">{category.name}</div>
+                      <div className="flex items-center justify-between">
+                        <CategoryIcon categoryId={category.id} size={18} className="h-9 w-9" />
+                        <span className="text-2xl font-bold text-brand tabular-nums">{count}</span>
+                      </div>
+                      <div className="mt-2 text-sm text-gray-600 leading-snug">{category.name}</div>
                     </div>
                   );
                 })}

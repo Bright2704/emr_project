@@ -135,7 +135,7 @@ export default function UsersPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-[#002d73] rounded-full flex items-center justify-center">
+                        <div className="w-8 h-8 bg-brand rounded-full flex items-center justify-center">
                           <span className="text-white font-medium text-sm">
                             {user.fullName.charAt(0)}
                           </span>

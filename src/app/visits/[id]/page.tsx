@@ -10,6 +10,8 @@ import { Badge } from '@/components/ui/Badge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 import { useDataStore, useAuthStore } from '@/store';
 import { formatDate, formatDateTime } from '@/lib/utils';
+import { RiskBanner } from '@/components/case/RiskFlags';
+import { CategoryBadge } from '@/lib/categories';
 
 export default function VisitDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -65,6 +67,9 @@ export default function VisitDetailPage({ params }: { params: Promise<{ id: stri
           กลับ
         </Button>
 
+        {/* Risk alert */}
+        <RiskBanner patientId={patient.id} />
+
         {/* Visit Info */}
         <Card>
           <CardBody>
@@ -74,7 +79,7 @@ export default function VisitDetailPage({ params }: { params: Promise<{ id: stri
                   <Badge variant={visit.visitType === 'OPD' ? 'info' : 'warning'} className="text-sm">
                     {visit.visitType === 'OPD' ? 'ผู้ป่วยนอก' : 'ผู้ป่วยใน'}
                   </Badge>
-                  <span className="font-mono text-xl font-bold text-[#002d73]">
+                  <span className="font-mono text-xl font-bold text-brand">
                     {visit.visitNo}
                   </span>
                 </div>
@@ -142,7 +147,7 @@ export default function VisitDetailPage({ params }: { params: Promise<{ id: stri
                     <TableRow key={doc.id}>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <FileText size={20} className="text-[#002d73]" />
+                          <FileText size={20} className="text-brand" />
                           <div>
                             <div className="font-medium">{doc.filePath.split('/').pop()}</div>
                             <div className="text-sm text-gray-500 uppercase">{doc.fileType}</div>
@@ -150,7 +155,7 @@ export default function VisitDetailPage({ params }: { params: Promise<{ id: stri
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge>{getCategoryName(doc.categoryId)}</Badge>
+                        <CategoryBadge categoryId={doc.categoryId} name={getCategoryName(doc.categoryId)} />
                       </TableCell>
                       <TableCell>{getUploaderName(doc.uploadedBy)}</TableCell>
                       <TableCell className="text-gray-500">
@@ -210,7 +215,7 @@ export default function VisitDetailPage({ params }: { params: Promise<{ id: stri
                       key={category.id}
                       className={`p-4 border rounded-lg ${count > 0 ? 'bg-blue-50 border-blue-200' : 'bg-gray-50'}`}
                     >
-                      <div className={`text-2xl font-bold ${count > 0 ? 'text-[#002d73]' : 'text-gray-400'}`}>
+                      <div className={`text-2xl font-bold ${count > 0 ? 'text-brand' : 'text-gray-400'}`}>
                         {count}
                       </div>
                       <div className="text-sm text-gray-600">{category.name}</div>

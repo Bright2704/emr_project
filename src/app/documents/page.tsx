@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, FileText, User, Calendar, Eye, Download, Printer, Filter } from 'lucide-react';
+import { Search, FileText, User, Calendar, Eye, Download, Printer, Filter, ChevronRight } from 'lucide-react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
 import { Input, Select } from '@/components/ui/Input';
@@ -10,7 +10,40 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 import { useDataStore, useAuthStore } from '@/store';
-import { formatDate, formatDateTime } from '@/lib/utils';
+import { cn, formatDate, formatDateTime } from '@/lib/utils';
+import { CategoryBadge, CategoryIcon } from '@/lib/categories';
+import { FileTypeTile } from '@/lib/fileType';
+
+// Compact, quiet icon button for row actions — refined alternative to a
+// row of full <Button>s. Tooltip + accessible label baked in.
+function IconAction({
+  label,
+  onClick,
+  tone = 'quiet',
+  children,
+}: {
+  label: string;
+  onClick?: (e: React.MouseEvent) => void;
+  tone?: 'quiet' | 'brand';
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      title={label}
+      aria-label={label}
+      onClick={onClick}
+      className={cn(
+        'inline-flex h-8 w-8 items-center justify-center rounded-lg transition-colors focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
+        tone === 'brand'
+          ? 'text-brand hover:bg-brand-50'
+          : 'text-gray-400 hover:bg-gray-100 hover:text-gray-700'
+      )}
+    >
+      {children}
+    </button>
+  );
+}
 
 function DocumentsContent() {
   const router = useRouter();
@@ -18,10 +51,35 @@ function DocumentsContent() {
   const { currentUser } = useAuthStore();
   const { patients, visits, documents, categories, users, searchPatients, getPatient, getVisitsByPatient, addAuditLog } = useDataStore();
 
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('hn') || '');
-  const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
+  const [selectedPatient, setSelectedPatient] = useState<string | null>(searchParams.get('patientId'));
+  const [searchQuery, setSearchQuery] = useState(() => {
+    const pid = searchParams.get('patientId');
+    if (pid) {
+      const p = getPatient(pid);
+      if (p) return `${p.firstName} ${p.lastName} (${p.hn})`;
+    }
+    return searchParams.get('hn') || '';
+  });
   const [viewMode, setViewMode] = useState<'visit' | 'category'>('visit');
   const [filterCategory, setFilterCategory] = useState(searchParams.get('category') || '');
+
+  // Keep the selected patient in the URL so returning from the document
+  // viewer (browser back) restores this patient's document list.
+  const selectPatient = (p: { id: string; firstName: string; lastName: string; hn: string }) => {
+    setSelectedPatient(p.id);
+    setSearchQuery(`${p.firstName} ${p.lastName} (${p.hn})`);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('patientId', p.id);
+    params.delete('hn');
+    router.replace(`/documents?${params.toString()}`);
+  };
+
+  const clearPatient = () => {
+    setSelectedPatient(null);
+    setSearchQuery('');
+    setFilterCategory('');
+    router.replace('/documents');
+  };
 
   const searchedPatients = searchQuery ? searchPatients(searchQuery) : [];
   const patient = selectedPatient ? getPatient(selectedPatient) : null;
@@ -79,7 +137,10 @@ function DocumentsContent() {
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
-                  setSelectedPatient(null);
+                  if (selectedPatient) {
+                    setSelectedPatient(null);
+                    router.replace('/documents');
+                  }
                 }}
                 className="pl-10"
               />
@@ -92,10 +153,7 @@ function DocumentsContent() {
                   <div
                     key={p.id}
                     className="p-4 hover:bg-gray-50 cursor-pointer transition-colors"
-                    onClick={() => {
-                      setSelectedPatient(p.id);
-                      setSearchQuery(`${p.firstName} ${p.lastName} (${p.hn})`);
-                    }}
+                    onClick={() => selectPatient(p)}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -135,7 +193,7 @@ function DocumentsContent() {
               <CardBody>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-[#002d73] rounded-full flex items-center justify-center">
+                    <div className="w-14 h-14 bg-brand rounded-full flex items-center justify-center">
                       <span className="text-white font-bold text-xl">
                         {patient.firstName.charAt(0)}
                       </span>
@@ -151,13 +209,7 @@ function DocumentsContent() {
                       </div>
                     </div>
                   </div>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setSelectedPatient(null);
-                      setSearchQuery('');
-                    }}
-                  >
+                  <Button variant="outline" onClick={clearPatient}>
                     เปลี่ยนผู้ป่วย
                   </Button>
                 </div>
@@ -212,23 +264,27 @@ function DocumentsContent() {
 
                   return (
                     <Card key={visit.id}>
-                      <CardHeader className="bg-gray-50">
+                      <CardHeader>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <Calendar size={20} className="text-gray-500" />
+                            <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand">
+                              <Calendar size={18} strokeWidth={1.75} />
+                            </span>
                             <div>
-                              <span className="font-mono font-medium text-[#002d73]">
-                                {visit.visitNo}
-                              </span>
-                              <Badge
-                                variant={visit.visitType === 'OPD' ? 'info' : 'warning'}
-                                className="ml-2"
-                              >
-                                {visit.visitType}
-                              </Badge>
+                              <div className="flex items-center gap-2">
+                                <span className="font-mono text-sm font-semibold text-gray-800">
+                                  {visit.visitNo}
+                                </span>
+                                <Badge variant={visit.visitType === 'OPD' ? 'info' : 'warning'}>
+                                  {visit.visitType}
+                                </Badge>
+                              </div>
+                              <span className="text-xs text-gray-500">{formatDate(visit.visitDate)}</span>
                             </div>
                           </div>
-                          <span className="text-gray-500">{formatDate(visit.visitDate)}</span>
+                          <span className="text-xs font-medium text-gray-400">
+                            {visitDocs.length} ไฟล์
+                          </span>
                         </div>
                       </CardHeader>
                       <CardBody className="p-0">
@@ -245,42 +301,45 @@ function DocumentsContent() {
                             </TableHeader>
                             <TableBody>
                               {visitDocs.map((doc) => (
-                                <TableRow key={doc.id}>
+                                <TableRow
+                                  key={doc.id}
+                                  className="group"
+                                  onClick={() => handleViewDocument(doc.id)}
+                                >
                                   <TableCell>
-                                    <div className="flex items-center gap-2">
-                                      <FileText size={20} className="text-[#002d73]" />
-                                      <div>
-                                        <div className="font-medium">
+                                    <div className="flex items-center gap-3">
+                                      <FileTypeTile fileType={doc.fileType} />
+                                      <div className="min-w-0">
+                                        <div className="truncate font-medium text-gray-800">
                                           {doc.filePath.split('/').pop()}
                                         </div>
-                                        <div className="text-sm text-gray-500 uppercase">
+                                        <div className="text-xs uppercase tracking-wide text-gray-400">
                                           {doc.fileType}
                                         </div>
                                       </div>
                                     </div>
                                   </TableCell>
                                   <TableCell>
-                                    <Badge>{doc.category?.name || 'ไม่ระบุ'}</Badge>
+                                    <CategoryBadge categoryId={doc.categoryId} name={doc.category?.name || 'ไม่ระบุ'} />
                                   </TableCell>
                                   <TableCell>{doc.uploader?.fullName || 'ไม่ระบุ'}</TableCell>
                                   <TableCell className="text-gray-500">
                                     {formatDateTime(doc.uploadedAt)}
                                   </TableCell>
                                   <TableCell>
-                                    <div className="flex gap-1">
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => handleViewDocument(doc.id)}
-                                      >
-                                        <Eye size={16} />
-                                      </Button>
-                                      <Button variant="ghost" size="sm">
-                                        <Download size={16} />
-                                      </Button>
-                                      <Button variant="ghost" size="sm">
-                                        <Printer size={16} />
-                                      </Button>
+                                    <div
+                                      className="flex items-center gap-0.5 opacity-60 transition-opacity group-hover:opacity-100"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      <IconAction label="ดูเอกสาร" tone="brand" onClick={() => handleViewDocument(doc.id)}>
+                                        <Eye size={17} strokeWidth={1.75} />
+                                      </IconAction>
+                                      <IconAction label="ดาวน์โหลด">
+                                        <Download size={17} strokeWidth={1.75} />
+                                      </IconAction>
+                                      <IconAction label="พิมพ์">
+                                        <Printer size={17} strokeWidth={1.75} />
+                                      </IconAction>
                                     </div>
                                   </TableCell>
                                 </TableRow>
@@ -310,7 +369,10 @@ function DocumentsContent() {
                       <Card key={category.id}>
                         <CardHeader>
                           <div className="flex items-center justify-between">
-                            <h3 className="font-semibold text-gray-800">{category.name}</h3>
+                            <div className="flex items-center gap-2.5">
+                              <CategoryIcon categoryId={category.id} size={18} className="h-9 w-9" />
+                              <h3 className="font-semibold text-gray-800">{category.name}</h3>
+                            </div>
                             <Badge variant={categoryDocs.length > 0 ? 'success' : 'default'}>
                               {categoryDocs.length} ไฟล์
                             </Badge>
@@ -318,27 +380,28 @@ function DocumentsContent() {
                         </CardHeader>
                         <CardBody className="p-0">
                           {categoryDocs.length > 0 ? (
-                            <div className="divide-y">
+                            <div className="divide-y divide-gray-100">
                               {categoryDocs.map((doc) => (
                                 <div
                                   key={doc.id}
-                                  className="p-3 hover:bg-gray-50 cursor-pointer transition-colors"
+                                  className="group flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors hover:bg-gray-50"
                                   onClick={() => handleViewDocument(doc.id)}
                                 >
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <FileText size={16} className="text-[#002d73]" />
-                                      <span className="text-sm">
-                                        {doc.filePath.split('/').pop()}
-                                      </span>
+                                  <FileTypeTile fileType={doc.fileType} size="sm" />
+                                  <div className="min-w-0 flex-1">
+                                    <div className="truncate text-sm font-medium text-gray-800">
+                                      {doc.filePath.split('/').pop()}
                                     </div>
-                                    <span className="text-xs text-gray-500">
-                                      {formatDate(doc.uploadedAt)}
-                                    </span>
+                                    <div className="mt-0.5 flex items-center gap-2 text-xs text-gray-400">
+                                      <span className="font-mono">{doc.visit.visitNo}</span>
+                                      <span>•</span>
+                                      <span>{formatDate(doc.uploadedAt)}</span>
+                                    </div>
                                   </div>
-                                  <div className="text-xs text-gray-500 mt-1 ml-6">
-                                    {doc.visit.visitNo}
-                                  </div>
+                                  <ChevronRight
+                                    size={16}
+                                    className="shrink-0 text-gray-300 transition-colors group-hover:text-gray-500"
+                                  />
                                 </div>
                               ))}
                             </div>

@@ -35,10 +35,13 @@ export function Modal({ isOpen, onClose, title, size = 'md', children }: ModalPr
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/50" onClick={onClose} />
+      <div
+        className="fixed inset-0 bg-brand-dark/30 backdrop-blur-sm animate-overlay-in"
+        onClick={onClose}
+      />
       <div
         className={cn(
-          'relative bg-white rounded-lg shadow-xl w-full mx-4',
+          'relative bg-white rounded-xl shadow-pop w-full mx-4 animate-pop-in',
           sizes[size]
         )}
       >

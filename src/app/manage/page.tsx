@@ -23,6 +23,7 @@ import { PinInput } from '@/components/ui/PinInput';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 import { useDataStore, useAuthStore } from '@/store';
 import { formatDate, formatDateTime } from '@/lib/utils';
+import { CategoryBadge } from '@/lib/categories';
 
 type ActionType = 'move' | 'edit' | 'delete' | null;
 
@@ -258,7 +259,7 @@ export default function ManagePage() {
                           <TableRow key={doc.id}>
                             <TableCell>
                               <div className="flex items-center gap-2">
-                                <FileText size={20} className="text-[#002d73]" />
+                                <FileText size={20} className="text-brand" />
                                 <div>
                                   <div className="font-medium">
                                     {doc.filePath.split('/').pop()}
@@ -270,7 +271,7 @@ export default function ManagePage() {
                               </div>
                             </TableCell>
                             <TableCell>
-                              <Badge>{category?.name || 'ไม่ระบุ'}</Badge>
+                              <CategoryBadge categoryId={doc.categoryId} name={category?.name || 'ไม่ระบุ'} />
                             </TableCell>
                             <TableCell>
                               <span className="font-mono text-sm">{visit?.visitNo}</span>
