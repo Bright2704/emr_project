@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
 @theme {
+  /* Typeface — Anuphan (loopless Thai sans, Bangkok Hospital style) */
+  --font-sans: var(--font-anuphan), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
   /* Bangkok Hospital — Professional Blue (brand) */
   --color-brand: #002d73;
   --color-brand-dark: #001f52;
@@ -35,7 +38,7 @@ html {
 body {
   background: var(--color-canvas);
   color: var(--foreground);
-  font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-anuphan), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;

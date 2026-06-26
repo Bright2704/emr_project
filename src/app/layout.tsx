@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Sarabun } from "next/font/google";
+import { Anuphan } from "next/font/google";
 import "./globals.css";
 
-const sarabun = Sarabun({
+const anuphan = Anuphan({
   weight: ['300', '400', '500', '600', '700'],
   subsets: ["thai", "latin"],
-  variable: "--font-sarabun",
+  variable: "--font-anuphan",
 });
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="th" className={`${sarabun.variable} h-full antialiased`}>
+    <html lang="th" className={`${anuphan.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>
   );
