@@ -197,6 +197,8 @@ interface AuthState {
   isAuthenticated: boolean;
   lastActivityAt: number | null;
   sessionLockType: 'none' | 'pin' | 'full'; // none = active, pin = need PIN, full = need full login
+  hasHydrated: boolean; // true once persisted state is rehydrated from localStorage
+  setHasHydrated: (v: boolean) => void;
   login: (professionalNo: string, pin: string) => { success: boolean; error?: string; needSetup?: boolean };
   logout: () => void;
   setupPin: (pin: string) => void;
@@ -213,6 +215,8 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       lastActivityAt: null,
       sessionLockType: 'none',
+      hasHydrated: false,
+      setHasHydrated: (v: boolean) => set({ hasHydrated: v }),
 
       login: (professionalNo: string, pin: string) => {
         const user = mockUsers.find((u) => u.professionalNo === professionalNo);
@@ -326,7 +330,18 @@ export const useAuthStore = create<AuthState>()(
         }
       },
     }),
-    { name: 'auth-storage' }
+    {
+      name: 'auth-storage',
+      partialize: (state) => ({
+        currentUser: state.currentUser,
+        isAuthenticated: state.isAuthenticated,
+        lastActivityAt: state.lastActivityAt,
+        sessionLockType: state.sessionLockType,
+      }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
+    }
   )
 );
 

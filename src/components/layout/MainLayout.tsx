@@ -14,15 +14,15 @@ interface MainLayoutProps {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   const router = useRouter();
-  const { isAuthenticated, currentUser } = useAuthStore();
+  const { isAuthenticated, currentUser, hasHydrated } = useAuthStore();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (hasHydrated && !isAuthenticated) {
       router.push('/login');
     }
-  }, [isAuthenticated, router]);
+  }, [hasHydrated, isAuthenticated, router]);
 
-  if (!isAuthenticated || !currentUser) {
+  if (!hasHydrated || !isAuthenticated || !currentUser) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-canvas">
         <div className="flex flex-col items-center gap-4" role="status" aria-live="polite">
