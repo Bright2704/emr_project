@@ -20,7 +20,7 @@ export default function PatientsPage() {
 
   const filteredPatients = searchQuery ? searchPatients(searchQuery) : patients;
 
-  const canShowFullId = currentUser && ['medical_record', 'admin'].includes(currentUser.role);
+  const canShowFullId = !!(currentUser && ['medical_record', 'admin'].includes(currentUser.role));
 
   return (
     <MainLayout>

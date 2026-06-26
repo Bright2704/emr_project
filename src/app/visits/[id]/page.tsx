@@ -21,7 +21,7 @@ export default function VisitDetailPage({ params }: { params: Promise<{ id: stri
   const patient = visit ? getPatient(visit.patientId) : null;
   const documents = visit ? getDocumentsByVisit(visit.id) : [];
 
-  const canUpload = currentUser && ['nurse', 'medical_record', 'admin'].includes(currentUser.role);
+  const canUpload = !!(currentUser && ['nurse', 'medical_record', 'admin'].includes(currentUser.role));
 
   const handleViewDocument = (docId: string) => {
     addAuditLog({

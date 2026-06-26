@@ -20,8 +20,8 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
   const patient = getPatient(id);
   const visits = patient ? getVisitsByPatient(patient.id) : [];
 
-  const canShowFullId = currentUser && ['medical_record', 'admin'].includes(currentUser.role);
-  const canCreateVisit = currentUser && ['nurse', 'medical_record', 'admin'].includes(currentUser.role);
+  const canShowFullId = !!(currentUser && ['medical_record', 'admin'].includes(currentUser.role));
+  const canCreateVisit = !!(currentUser && ['nurse', 'medical_record', 'admin'].includes(currentUser.role));
 
   if (!patient) {
     return (

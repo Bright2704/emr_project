@@ -26,8 +26,8 @@ export default function DashboardPage() {
 
   const recentActivities = auditLogs.slice(0, 5);
 
-  const canManagePatients = currentUser && ['nurse', 'medical_record', 'admin'].includes(currentUser.role);
-  const canScan = currentUser && ['nurse', 'medical_record', 'admin'].includes(currentUser.role);
+  const canManagePatients = !!(currentUser && ['nurse', 'medical_record', 'admin'].includes(currentUser.role));
+  const canScan = !!(currentUser && ['nurse', 'medical_record', 'admin'].includes(currentUser.role));
 
   return (
     <MainLayout>
