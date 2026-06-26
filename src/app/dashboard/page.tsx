@@ -9,7 +9,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { useDataStore, useAuthStore } from '@/store';
-import { formatDateTime, getRoleName } from '@/lib/utils';
+import { formatDateTime, getRoleName, getActionName } from '@/lib/utils';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -162,12 +162,7 @@ export default function DashboardPage() {
                                 : 'default'
                             }
                           >
-                            {log.action === 'login' && 'เข้าสู่ระบบ'}
-                            {log.action === 'view' && 'ดูเอกสาร'}
-                            {log.action === 'upload' && 'อัปโหลด'}
-                            {log.action === 'move' && 'ย้ายเอกสาร'}
-                            {log.action === 'edit' && 'แก้ไข'}
-                            {log.action === 'delete' && 'ลบ'}
+                            {getActionName(log.action)}
                           </Badge>
                         </TableCell>
                         <TableCell>{log.userId}</TableCell>

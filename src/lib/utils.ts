@@ -64,6 +64,10 @@ export function getActionName(action: string) {
     move: 'ย้ายเอกสาร',
     edit: 'แก้ไข',
     delete: 'ลบ',
+    note: 'บันทึกหมายเหตุ',
+    comment: 'แสดงความคิดเห็น',
+    annotate: 'มาร์กรูปภาพ',
+    risk: 'บันทึกความเสี่ยง',
   };
   return actions[action] || action;
 }

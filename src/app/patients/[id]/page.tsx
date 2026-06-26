@@ -9,7 +9,9 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 import { useDataStore, useAuthStore } from '@/store';
-import { formatDate, formatDateTime, maskNationalId, calculateAge } from '@/lib/utils';
+import { formatDate, maskNationalId, calculateAge } from '@/lib/utils';
+import { CaseNotes } from '@/components/case/CaseNotes';
+import { RiskFlags, RiskBanner } from '@/components/case/RiskFlags';
 
 export default function PatientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -45,6 +47,9 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
           <ArrowLeft size={20} className="mr-2" />
           กลับ
         </Button>
+
+        {/* Risk alert */}
+        <RiskBanner patientId={patient.id} />
 
         {/* Patient Info */}
         <Card>
@@ -96,6 +101,12 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
             </div>
           </CardBody>
         </Card>
+
+        {/* Risk flags + Case notes (collaboration) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <RiskFlags patientId={patient.id} />
+          <CaseNotes patientId={patient.id} />
+        </div>
 
         {/* Visits */}
         <Card>

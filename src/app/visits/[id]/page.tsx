@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 import { useDataStore, useAuthStore } from '@/store';
 import { formatDate, formatDateTime } from '@/lib/utils';
+import { RiskBanner } from '@/components/case/RiskFlags';
 
 export default function VisitDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -64,6 +65,9 @@ export default function VisitDetailPage({ params }: { params: Promise<{ id: stri
           <ArrowLeft size={20} className="mr-2" />
           กลับ
         </Button>
+
+        {/* Risk alert */}
+        <RiskBanner patientId={patient.id} />
 
         {/* Visit Info */}
         <Card>
