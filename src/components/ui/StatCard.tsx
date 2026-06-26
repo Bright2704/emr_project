@@ -6,7 +6,7 @@ interface StatCardProps {
   value: string | number;
   subtitle?: string;
   icon?: LucideIcon;
-  variant?: 'default' | 'success' | 'warning' | 'danger' | 'info';
+  variant?: 'default' | 'accent' | 'success' | 'warning' | 'danger' | 'info';
   progress?: number;
   onClick?: () => void;
 }
@@ -26,6 +26,12 @@ export function StatCard({
       iconColor: 'text-brand',
       valueColor: 'text-brand',
       progressColor: 'bg-brand',
+    },
+    accent: {
+      iconBg: 'bg-accent-50',
+      iconColor: 'text-accent',
+      valueColor: 'text-accent-600',
+      progressColor: 'bg-accent',
     },
     success: {
       iconBg: 'bg-green-50',

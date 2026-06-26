@@ -10,6 +10,12 @@
   --color-brand-50: #eef2f9;
   --color-brand-100: #d6e0f0;
 
+  /* Warm sand/gold accent — pairs with navy (Bangkok Hospital style) */
+  --color-accent: #b6892f;
+  --color-accent-600: #9c7427;
+  --color-accent-50: #faf4e6;
+  --color-accent-100: #f1e4c4;
+
   /* App surfaces — cool-tinted neutrals (single gray family) */
   --color-surface: #ffffff;
   --color-canvas: #f4f6f9;

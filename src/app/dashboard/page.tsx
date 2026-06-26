@@ -61,7 +61,7 @@ export default function DashboardPage() {
             value={todayDocuments.length}
             subtitle="ไฟล์"
             icon={FileText}
-            variant="info"
+            variant="accent"
           />
           <StatCard
             title="เอกสารทั้งหมด"
