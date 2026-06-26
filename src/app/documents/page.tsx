@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 import { useDataStore, useAuthStore } from '@/store';
 import { formatDate, formatDateTime } from '@/lib/utils';
+import { CategoryBadge, CategoryIcon } from '@/lib/categories';
 
 function DocumentsContent() {
   const router = useRouter();
@@ -18,10 +19,35 @@ function DocumentsContent() {
   const { currentUser } = useAuthStore();
   const { patients, visits, documents, categories, users, searchPatients, getPatient, getVisitsByPatient, addAuditLog } = useDataStore();
 
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('hn') || '');
-  const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
+  const [selectedPatient, setSelectedPatient] = useState<string | null>(searchParams.get('patientId'));
+  const [searchQuery, setSearchQuery] = useState(() => {
+    const pid = searchParams.get('patientId');
+    if (pid) {
+      const p = getPatient(pid);
+      if (p) return `${p.firstName} ${p.lastName} (${p.hn})`;
+    }
+    return searchParams.get('hn') || '';
+  });
   const [viewMode, setViewMode] = useState<'visit' | 'category'>('visit');
   const [filterCategory, setFilterCategory] = useState(searchParams.get('category') || '');
+
+  // Keep the selected patient in the URL so returning from the document
+  // viewer (browser back) restores this patient's document list.
+  const selectPatient = (p: { id: string; firstName: string; lastName: string; hn: string }) => {
+    setSelectedPatient(p.id);
+    setSearchQuery(`${p.firstName} ${p.lastName} (${p.hn})`);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('patientId', p.id);
+    params.delete('hn');
+    router.replace(`/documents?${params.toString()}`);
+  };
+
+  const clearPatient = () => {
+    setSelectedPatient(null);
+    setSearchQuery('');
+    setFilterCategory('');
+    router.replace('/documents');
+  };
 
   const searchedPatients = searchQuery ? searchPatients(searchQuery) : [];
   const patient = selectedPatient ? getPatient(selectedPatient) : null;
@@ -79,7 +105,10 @@ function DocumentsContent() {
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
-                  setSelectedPatient(null);
+                  if (selectedPatient) {
+                    setSelectedPatient(null);
+                    router.replace('/documents');
+                  }
                 }}
                 className="pl-10"
               />
@@ -92,10 +121,7 @@ function DocumentsContent() {
                   <div
                     key={p.id}
                     className="p-4 hover:bg-gray-50 cursor-pointer transition-colors"
-                    onClick={() => {
-                      setSelectedPatient(p.id);
-                      setSearchQuery(`${p.firstName} ${p.lastName} (${p.hn})`);
-                    }}
+                    onClick={() => selectPatient(p)}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -151,13 +177,7 @@ function DocumentsContent() {
                       </div>
                     </div>
                   </div>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setSelectedPatient(null);
-                      setSearchQuery('');
-                    }}
-                  >
+                  <Button variant="outline" onClick={clearPatient}>
                     เปลี่ยนผู้ป่วย
                   </Button>
                 </div>
@@ -260,7 +280,7 @@ function DocumentsContent() {
                                     </div>
                                   </TableCell>
                                   <TableCell>
-                                    <Badge>{doc.category?.name || 'ไม่ระบุ'}</Badge>
+                                    <CategoryBadge categoryId={doc.categoryId} name={doc.category?.name || 'ไม่ระบุ'} />
                                   </TableCell>
                                   <TableCell>{doc.uploader?.fullName || 'ไม่ระบุ'}</TableCell>
                                   <TableCell className="text-gray-500">
@@ -310,7 +330,10 @@ function DocumentsContent() {
                       <Card key={category.id}>
                         <CardHeader>
                           <div className="flex items-center justify-between">
-                            <h3 className="font-semibold text-gray-800">{category.name}</h3>
+                            <div className="flex items-center gap-2.5">
+                              <CategoryIcon categoryId={category.id} size={18} className="h-9 w-9" />
+                              <h3 className="font-semibold text-gray-800">{category.name}</h3>
+                            </div>
                             <Badge variant={categoryDocs.length > 0 ? 'success' : 'default'}>
                               {categoryDocs.length} ไฟล์
                             </Badge>
