@@ -12,6 +12,7 @@ import { useDataStore, useAuthStore } from '@/store';
 import { formatDate, maskNationalId, calculateAge } from '@/lib/utils';
 import { CaseNotes } from '@/components/case/CaseNotes';
 import { RiskFlags, RiskBanner } from '@/components/case/RiskFlags';
+import { CategoryIcon } from '@/lib/categories';
 
 export default function PatientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -205,11 +206,14 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
                   return (
                     <div
                       key={category.id}
-                      className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                      className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 cursor-pointer transition-colors"
                       onClick={() => router.push(`/documents?hn=${patient.hn}&category=${category.id}`)}
                     >
-                      <div className="text-2xl font-bold text-brand">{count}</div>
-                      <div className="text-sm text-gray-600">{category.name}</div>
+                      <div className="flex items-center justify-between">
+                        <CategoryIcon categoryId={category.id} size={18} className="h-9 w-9" />
+                        <span className="text-2xl font-bold text-brand tabular-nums">{count}</span>
+                      </div>
+                      <div className="mt-2 text-sm text-gray-600 leading-snug">{category.name}</div>
                     </div>
                   );
                 })}

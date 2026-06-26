@@ -15,13 +15,20 @@ import type {
 
 // Mock Data
 const mockCategories: DocumentCategory[] = [
-  { id: 'cat-1', name: 'ผลตรวจเลือด', isActive: true },
-  { id: 'cat-2', name: 'ผลเอกซเรย์', isActive: true },
-  { id: 'cat-3', name: 'คำวินิจฉัย', isActive: true },
+  // ผลตรวจ / วินิจฉัย (lab)
+  { id: 'cat-1', name: 'ผลตรวจทางห้องปฏิบัติการ', isActive: true },
+  { id: 'cat-2', name: 'ผลตรวจทางรังสีวิทยา', isActive: true },
+  { id: 'cat-8', name: 'ผลตรวจคลื่นไฟฟ้าหัวใจ', isActive: true },
+  { id: 'cat-9', name: 'ผลตรวจทางพยาธิวิทยา', isActive: true },
+  // บันทึกการรักษา (clinical)
+  { id: 'cat-3', name: 'คำวินิจฉัยและการรักษา', isActive: true },
   { id: 'cat-4', name: 'ใบสั่งยา', isActive: true },
-  { id: 'cat-5', name: 'เอกสารยินยอม', isActive: true },
   { id: 'cat-6', name: 'บันทึกการพยาบาล', isActive: true },
-  { id: 'cat-7', name: 'อื่นๆ', isActive: true },
+  { id: 'cat-10', name: 'บันทึกการผ่าตัด / หัตถการ', isActive: true },
+  // เอกสาร / ธุรการ (admin)
+  { id: 'cat-5', name: 'เอกสารยินยอม', isActive: true },
+  { id: 'cat-11', name: 'ใบส่งตัว / ส่งต่อผู้ป่วย', isActive: true },
+  { id: 'cat-7', name: 'เอกสารทั่วไป / อื่นๆ', isActive: true },
 ];
 
 const mockUsers: User[] = [

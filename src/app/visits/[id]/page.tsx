@@ -11,6 +11,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@
 import { useDataStore, useAuthStore } from '@/store';
 import { formatDate, formatDateTime } from '@/lib/utils';
 import { RiskBanner } from '@/components/case/RiskFlags';
+import { CategoryBadge } from '@/lib/categories';
 
 export default function VisitDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -154,7 +155,7 @@ export default function VisitDetailPage({ params }: { params: Promise<{ id: stri
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge>{getCategoryName(doc.categoryId)}</Badge>
+                        <CategoryBadge categoryId={doc.categoryId} name={getCategoryName(doc.categoryId)} />
                       </TableCell>
                       <TableCell>{getUploaderName(doc.uploadedBy)}</TableCell>
                       <TableCell className="text-gray-500">

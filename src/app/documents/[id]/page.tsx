@@ -22,6 +22,7 @@ import { formatDate, formatDateTime } from '@/lib/utils';
 import { ImageAnnotator } from '@/components/case/ImageAnnotator';
 import { DocumentComments } from '@/components/case/DocumentComments';
 import { RiskBanner } from '@/components/case/RiskFlags';
+import { CategoryBadge } from '@/lib/categories';
 
 export default function DocumentViewerPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -117,7 +118,7 @@ export default function DocumentViewerPage({ params }: { params: Promise<{ id: s
                   </div>
                   <div>
                     <p className="text-gray-500">หมวดหมู่</p>
-                    <Badge>{category?.name || 'ไม่ระบุ'}</Badge>
+                    <CategoryBadge categoryId={document.categoryId} name={category?.name || 'ไม่ระบุ'} />
                   </div>
                   <div>
                     <p className="text-gray-500">อัปโหลดเมื่อ</p>
