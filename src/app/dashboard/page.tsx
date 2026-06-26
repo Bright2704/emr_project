@@ -257,7 +257,7 @@ export default function DashboardPage() {
           <CardBody>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-[#002d73] rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-brand rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-lg">
                     {currentUser?.fullName?.charAt(0) || 'U'}
                   </span>

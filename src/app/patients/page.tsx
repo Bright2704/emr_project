@@ -79,7 +79,7 @@ export default function PatientsPage() {
                   return (
                     <TableRow key={patient.id}>
                       <TableCell>
-                        <span className="font-mono font-medium text-[#002d73]">
+                        <span className="font-mono font-medium text-brand">
                           {patient.hn}
                         </span>
                       </TableCell>

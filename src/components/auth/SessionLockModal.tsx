@@ -50,7 +50,7 @@ export function SessionLockModal({ isOpen, lockType, onUnlock }: SessionLockModa
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-sm mx-4 overflow-hidden">
         {/* Header */}
-        <div className="bg-[#002d73] px-6 py-5 text-center">
+        <div className="bg-brand px-6 py-5 text-center">
           <div className="w-16 h-16 bg-white/20 rounded-full mx-auto mb-3 flex items-center justify-center">
             <Lock className="w-8 h-8 text-white" />
           </div>
@@ -70,7 +70,7 @@ export function SessionLockModal({ isOpen, lockType, onUnlock }: SessionLockModa
             <div className="space-y-4">
               {/* User Info */}
               <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <div className="w-10 h-10 bg-[#002d73] rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-brand rounded-full flex items-center justify-center">
                   <User size={20} className="text-white" />
                 </div>
                 <div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
@@ -17,7 +17,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleUsernameSubmit = (e: React.FormEvent) => {
+  const handleUsernameSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!professionalNo.trim()) {
       setError('กรุณากรอกเลขใบประกอบวิชาชีพ');
@@ -46,12 +46,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-sm overflow-hidden">
+    <div className="min-h-dvh bg-canvas flex items-center justify-center p-4 relative overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-10%,rgba(0,45,115,0.10),transparent)]"
+      />
+      <div className="relative bg-white rounded-2xl shadow-pop w-full max-w-sm overflow-hidden border border-gray-200/70 animate-pop-in">
         {/* Header */}
-        <div className="bg-[#002d73] px-6 py-5 text-center">
-          <div className="w-14 h-14 bg-white rounded-lg mx-auto mb-3 flex items-center justify-center">
-            <Plus className="w-8 h-8 text-[#002d73]" strokeWidth={3} />
+        <div className="bg-brand px-6 py-6 text-center">
+          <div className="w-14 h-14 bg-white rounded-xl mx-auto mb-3 flex items-center justify-center shadow-sm">
+            <Plus className="w-8 h-8 text-brand" strokeWidth={3} />
           </div>
           <h1 className="text-white text-lg font-bold">EMR SCAN VIEWER</h1>
           <p className="text-blue-200 text-sm mt-1">ระบบจัดเก็บและเรียกดูเอกสารสแกนผู้ป่วย</p>
@@ -92,7 +96,7 @@ export default function LoginPage() {
               <div className="text-center mb-4">
                 <h2 className="text-lg font-semibold text-gray-800">กรอก PIN</h2>
                 <p className="text-gray-500 text-sm">กรอก PIN 6 หลักของคุณ</p>
-                <p className="text-sm text-[#002d73] font-medium mt-2">{professionalNo}</p>
+                <p className="text-sm text-brand font-medium mt-2">{professionalNo}</p>
               </div>
 
               <PinInput
@@ -109,7 +113,7 @@ export default function LoginPage() {
                 <div className="flex items-center justify-center gap-3">
                   <Link
                     href="/reset-pin"
-                    className="text-sm text-[#002d73] hover:underline"
+                    className="text-sm text-brand hover:underline"
                   >
                     ลืม PIN?
                   </Link>

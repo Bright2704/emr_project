@@ -135,7 +135,7 @@ function DocumentsContent() {
               <CardBody>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-[#002d73] rounded-full flex items-center justify-center">
+                    <div className="w-14 h-14 bg-brand rounded-full flex items-center justify-center">
                       <span className="text-white font-bold text-xl">
                         {patient.firstName.charAt(0)}
                       </span>
@@ -217,7 +217,7 @@ function DocumentsContent() {
                           <div className="flex items-center gap-3">
                             <Calendar size={20} className="text-gray-500" />
                             <div>
-                              <span className="font-mono font-medium text-[#002d73]">
+                              <span className="font-mono font-medium text-brand">
                                 {visit.visitNo}
                               </span>
                               <Badge
@@ -248,7 +248,7 @@ function DocumentsContent() {
                                 <TableRow key={doc.id}>
                                   <TableCell>
                                     <div className="flex items-center gap-2">
-                                      <FileText size={20} className="text-[#002d73]" />
+                                      <FileText size={20} className="text-brand" />
                                       <div>
                                         <div className="font-medium">
                                           {doc.filePath.split('/').pop()}
@@ -327,7 +327,7 @@ function DocumentsContent() {
                                 >
                                   <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                      <FileText size={16} className="text-[#002d73]" />
+                                      <FileText size={16} className="text-brand" />
                                       <span className="text-sm">
                                         {doc.filePath.split('/').pop()}
                                       </span>

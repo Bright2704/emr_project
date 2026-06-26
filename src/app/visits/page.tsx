@@ -130,7 +130,7 @@ function VisitsContent() {
                   return (
                     <TableRow key={visit.id}>
                       <TableCell>
-                        <span className="font-mono font-medium text-[#002d73]">
+                        <span className="font-mono font-medium text-brand">
                           {visit.visitNo}
                         </span>
                       </TableCell>
@@ -221,7 +221,7 @@ function VisitsContent() {
                   <div
                     key={p.id}
                     className={`p-3 cursor-pointer hover:bg-gray-50 ${
-                      selectedPatient === p.id ? 'bg-blue-50 border-l-4 border-[#002d73]' : ''
+                      selectedPatient === p.id ? 'bg-blue-50 border-l-4 border-brand' : ''
                     }`}
                     onClick={() => {
                       setSelectedPatient(p.id);

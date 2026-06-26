@@ -63,9 +63,9 @@ export default function ResetPinPage() {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-sm overflow-hidden">
         {/* Header */}
-        <div className="bg-[#002d73] px-6 py-5 text-center">
+        <div className="bg-brand px-6 py-5 text-center">
           <div className="w-14 h-14 bg-white rounded-lg mx-auto mb-3 flex items-center justify-center">
-            <Plus className="w-8 h-8 text-[#002d73]" strokeWidth={3} />
+            <Plus className="w-8 h-8 text-brand" strokeWidth={3} />
           </div>
           <h1 className="text-white text-lg font-bold">ลืม PIN</h1>
           <p className="text-blue-200 text-sm">รีเซ็ต PIN ด้วย OTP</p>
@@ -109,10 +109,10 @@ export default function ResetPinPage() {
                   type="button"
                   onClick={() => setMethod('phone')}
                   className={`w-full p-3 border rounded-lg flex items-center gap-3 transition-colors ${
-                    method === 'phone' ? 'border-[#002d73] bg-blue-50' : 'border-gray-200 hover:bg-gray-50'
+                    method === 'phone' ? 'border-brand bg-blue-50' : 'border-gray-200 hover:bg-gray-50'
                   }`}
                 >
-                  <Phone className="text-[#002d73]" size={20} />
+                  <Phone className="text-brand" size={20} />
                   <div className="text-left">
                     <div className="font-medium text-sm">SMS</div>
                     <div className="text-xs text-gray-500">08X-XXX-X567</div>
@@ -123,10 +123,10 @@ export default function ResetPinPage() {
                   type="button"
                   onClick={() => setMethod('email')}
                   className={`w-full p-3 border rounded-lg flex items-center gap-3 transition-colors ${
-                    method === 'email' ? 'border-[#002d73] bg-blue-50' : 'border-gray-200 hover:bg-gray-50'
+                    method === 'email' ? 'border-brand bg-blue-50' : 'border-gray-200 hover:bg-gray-50'
                   }`}
                 >
-                  <Mail className="text-[#002d73]" size={20} />
+                  <Mail className="text-brand" size={20} />
                   <div className="text-left">
                     <div className="font-medium text-sm">อีเมล</div>
                     <div className="text-xs text-gray-500">s***@hospital.com</div>
@@ -160,7 +160,7 @@ export default function ResetPinPage() {
                 error={error}
               />
 
-              <button type="button" onClick={handleSendOtp} className="w-full text-sm text-[#002d73] hover:underline">
+              <button type="button" onClick={handleSendOtp} className="w-full text-sm text-brand hover:underline">
                 ส่ง OTP อีกครั้ง
               </button>
 

@@ -82,7 +82,7 @@ export function PinInput({ length = 6, onComplete, error, disabled }: PinInputPr
             disabled={disabled}
             className={cn(
               'w-12 h-14 text-center text-2xl font-bold border rounded-lg',
-              'focus:outline-none focus:ring-2 focus:ring-[#002d73] focus:border-transparent',
+              'focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent',
               error ? 'border-red-500 bg-red-50' : 'border-gray-300',
               disabled && 'bg-gray-100 cursor-not-allowed'
             )}

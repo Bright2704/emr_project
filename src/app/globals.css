@@ -1,46 +1,127 @@
 @import "tailwindcss";
 
+@theme {
+  /* Bangkok Hospital — Professional Blue (brand) */
+  --color-brand: #002d73;
+  --color-brand-dark: #001f52;
+  --color-brand-50: #eef2f9;
+  --color-brand-100: #d6e0f0;
+
+  /* App surfaces — cool-tinted neutrals (single gray family) */
+  --color-surface: #ffffff;
+  --color-canvas: #f4f6f9;
+
+  /* Tinted, layered shadows (carry the brand hue, not pure black) */
+  --shadow-card: 0 1px 2px 0 rgb(0 45 115 / 0.04), 0 1px 3px 0 rgb(0 45 115 / 0.06);
+  --shadow-card-hover: 0 4px 12px -2px rgb(0 45 115 / 0.10), 0 2px 6px -2px rgb(0 45 115 / 0.08);
+  --shadow-pop: 0 12px 32px -8px rgb(0 45 115 / 0.18), 0 4px 10px -4px rgb(0 45 115 / 0.10);
+}
+
 :root {
-  /* Bangkok Hospital - Professional Blue */
+  /* legacy vars kept for any inline var() usage */
   --primary: #002d73;
   --primary-hover: #001f52;
-
-  /* Neutral colors */
-  --background: #f5f7fa;
-  --foreground: #333333;
+  --background: #f4f6f9;
+  --foreground: #1f2733;
   --card-bg: #ffffff;
-  --border: #e0e0e0;
-  --text-muted: #666666;
+  --border: #e3e8ef;
+  --text-muted: #5b6573;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
+  background: var(--color-canvas);
   color: var(--foreground);
   font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Tabular figures for data-dense numeric content */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Selection tinted with brand */
+::selection {
+  background: rgb(0 45 115 / 0.14);
+  color: #001f52;
+}
+
+/* Keyboard-only focus ring (no ring on mouse click) */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
+  background: #c4ccd8;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+  background: #a4afbf;
+  background-clip: padding-box;
+}
+
+/* Skeleton loading shimmer */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+.skeleton {
+  background: #e3e8ef;
+  border-radius: 0.5rem;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+/* Modal / overlay entry */
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-overlay-in {
+  animation: overlay-in 0.18s ease-out;
+}
+
+.animate-pop-in {
+  animation: pop-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Print styles */
 @media print {
   .no-print {
     display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

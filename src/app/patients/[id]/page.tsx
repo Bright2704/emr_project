@@ -51,7 +51,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
           <CardBody>
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-[#002d73] rounded-full flex items-center justify-center">
+                <div className="w-16 h-16 bg-brand rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-2xl">
                     {patient.firstName.charAt(0)}
                   </span>
@@ -61,7 +61,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
                     {patient.firstName} {patient.lastName}
                   </h1>
                   <div className="flex items-center gap-4 mt-1 text-gray-500">
-                    <span className="font-mono text-[#002d73] font-medium">{patient.hn}</span>
+                    <span className="font-mono text-brand font-medium">{patient.hn}</span>
                     <span>•</span>
                     <span>{formatDate(patient.dateOfBirth)} ({calculateAge(patient.dateOfBirth)} ปี)</span>
                   </div>
@@ -122,7 +122,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
                     return (
                       <TableRow key={visit.id}>
                         <TableCell>
-                          <span className="font-mono font-medium text-[#002d73]">
+                          <span className="font-mono font-medium text-brand">
                             {visit.visitNo}
                           </span>
                         </TableCell>
@@ -197,7 +197,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
                       className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
                       onClick={() => router.push(`/documents?hn=${patient.hn}&category=${category.id}`)}
                     >
-                      <div className="text-2xl font-bold text-[#002d73]">{count}</div>
+                      <div className="text-2xl font-bold text-brand">{count}</div>
                       <div className="text-sm text-gray-600">{category.name}</div>
                     </div>
                   );

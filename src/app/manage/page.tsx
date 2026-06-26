@@ -258,7 +258,7 @@ export default function ManagePage() {
                           <TableRow key={doc.id}>
                             <TableCell>
                               <div className="flex items-center gap-2">
-                                <FileText size={20} className="text-[#002d73]" />
+                                <FileText size={20} className="text-brand" />
                                 <div>
                                   <div className="font-medium">
                                     {doc.filePath.split('/').pop()}

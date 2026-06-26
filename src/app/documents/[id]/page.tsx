@@ -129,7 +129,7 @@ export default function DocumentViewerPage({ params }: { params: Promise<{ id: s
               <div>
                 <h3 className="font-semibold text-gray-800 mb-3">ข้อมูลผู้ป่วย</h3>
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-[#002d73] rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-brand rounded-full flex items-center justify-center">
                     <User size={20} className="text-white" />
                   </div>
                   <div>
@@ -182,7 +182,7 @@ export default function DocumentViewerPage({ params }: { params: Promise<{ id: s
                 <div className="bg-white shadow-lg rounded-lg p-8 w-[595px] min-h-[842px]">
                   {/* Header */}
                   <div className="text-center border-b pb-4 mb-4">
-                    <h1 className="text-xl font-bold text-[#002d73]">โรงพยาบาลตัวอย่าง</h1>
+                    <h1 className="text-xl font-bold text-brand">โรงพยาบาลตัวอย่าง</h1>
                     <p className="text-sm text-gray-500">Sample Hospital</p>
                   </div>
 

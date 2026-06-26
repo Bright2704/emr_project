@@ -38,12 +38,12 @@ export default function Sidebar() {
   );
 
   return (
-    <aside className="w-60 bg-[#002d73] min-h-screen flex flex-col">
+    <aside className="w-60 bg-brand min-h-screen flex flex-col sticky top-0 h-screen">
       {/* Logo */}
-      <div className="p-4 border-b border-white/20">
+      <div className="p-4 border-b border-white/15">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-            <Plus className="w-6 h-6 text-[#002d73]" strokeWidth={3} />
+          <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">
+            <Plus className="w-6 h-6 text-brand" strokeWidth={3} />
           </div>
           <div>
             <h1 className="text-white font-bold text-sm">EMR SCAN VIEWER</h1>

@@ -10,8 +10,8 @@ export function Card({ children, className, onClick }: CardProps) {
   return (
     <div
       className={cn(
-        'bg-white rounded-lg border border-gray-200',
-        onClick && 'cursor-pointer hover:shadow-md transition-shadow',
+        'bg-white rounded-xl border border-gray-200/80 shadow-card',
+        onClick && 'cursor-pointer hover:shadow-card-hover hover:border-gray-300 transition-[box-shadow,border-color] duration-200',
         className
       )}
       onClick={onClick}
@@ -30,5 +30,5 @@ export function CardBody({ children, className }: { children: React.ReactNode; c
 }
 
 export function CardFooter({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn('px-5 py-3 border-t border-gray-100 bg-gray-50 rounded-b-lg', className)}>{children}</div>;
+  return <div className={cn('px-5 py-3 border-t border-gray-100 bg-gray-50/70 rounded-b-xl', className)}>{children}</div>;
 }
