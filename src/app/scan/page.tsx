@@ -13,6 +13,14 @@ import {
   Calendar,
   X,
   Loader2,
+  Settings2,
+  Droplets,
+  Scan,
+  Stethoscope,
+  Pill,
+  ClipboardCheck,
+  HeartPulse,
+  FolderOpen,
 } from 'lucide-react';
 import MainLayout from '@/components/layout/MainLayout';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
@@ -39,6 +47,14 @@ function ScanContent() {
     addAuditLog,
   } = useDataStore();
 
+  // Mock scanners data
+  const availableScanners = [
+    { id: 'scanner-1', name: 'MFP ห้องตรวจ 1', ip: '192.168.1.101', location: 'OPD ชั้น 1', status: 'online' },
+    { id: 'scanner-2', name: 'MFP ห้องตรวจ 2', ip: '192.168.1.102', location: 'OPD ชั้น 2', status: 'online' },
+    { id: 'scanner-3', name: 'MFP เวชระเบียน', ip: '192.168.1.103', location: 'เวชระเบียน', status: 'online' },
+    { id: 'scanner-4', name: 'MFP ห้องฉุกเฉิน', ip: '192.168.1.104', location: 'ER', status: 'offline' },
+  ];
+
   // State
   const [step, setStep] = useState<'search' | 'confirm' | 'upload' | 'preview' | 'success'>('search');
   const [searchQuery, setSearchQuery] = useState('');
@@ -48,6 +64,51 @@ function ScanContent() {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [isScanning, setIsScanning] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showScannerModal, setShowScannerModal] = useState(false);
+  const [selectedScanner, setSelectedScanner] = useState<string | null>(null);
+
+  // Default scanner (persisted in localStorage)
+  const [defaultScanner, setDefaultScanner] = useState<string | null>(null);
+
+  // Load default scanner from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('defaultScanner');
+    if (saved) {
+      setDefaultScanner(saved);
+    }
+  }, []);
+
+  // Get current scanner info
+  const currentScanner = defaultScanner
+    ? availableScanners.find(s => s.id === defaultScanner)
+    : null;
+
+  // Category icon helper
+  const getCategoryIcon = (categoryId: string, size: number = 20) => {
+    const icons: Record<string, React.ReactNode> = {
+      'cat-1': <Droplets size={size} />,
+      'cat-2': <Scan size={size} />,
+      'cat-3': <Stethoscope size={size} />,
+      'cat-4': <Pill size={size} />,
+      'cat-5': <ClipboardCheck size={size} />,
+      'cat-6': <HeartPulse size={size} />,
+      'cat-7': <FolderOpen size={size} />,
+    };
+    return icons[categoryId] || <FileText size={size} />;
+  };
+
+  const getCategoryColor = (categoryId: string) => {
+    const colors: Record<string, string> = {
+      'cat-1': 'text-red-500 bg-red-100',
+      'cat-2': 'text-purple-500 bg-purple-100',
+      'cat-3': 'text-blue-500 bg-blue-100',
+      'cat-4': 'text-green-500 bg-green-100',
+      'cat-5': 'text-orange-500 bg-orange-100',
+      'cat-6': 'text-pink-500 bg-pink-100',
+      'cat-7': 'text-gray-500 bg-gray-100',
+    };
+    return colors[categoryId] || 'text-gray-500 bg-gray-100';
+  };
 
   // Check URL params
   useEffect(() => {
@@ -79,17 +140,50 @@ function ScanContent() {
     setStep('upload');
   };
 
-  const handleScan = async () => {
+  const handleOpenScannerModal = () => {
+    setSelectedScanner(defaultScanner);
+    setShowScannerModal(true);
+  };
+
+  const handleScanWithScanner = async (scannerId: string) => {
     setIsScanning(true);
-    // Simulate scanning
+
+    // Simulate scanning from selected scanner
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
     // Create mock scanned file
-    const mockFile = new File(['mock pdf content'], `scan_${Date.now()}.pdf`, {
+    const scanner = availableScanners.find(s => s.id === scannerId);
+    const mockFile = new File(['mock pdf content'], `scan_${scanner?.name.replace(/\s+/g, '_')}_${Date.now()}.pdf`, {
       type: 'application/pdf',
     });
     setUploadedFiles((prev) => [...prev, mockFile]);
     setIsScanning(false);
+  };
+
+  const handleScanClick = () => {
+    // If default scanner is set and online, scan directly
+    if (defaultScanner && currentScanner?.status === 'online') {
+      handleScanWithScanner(defaultScanner);
+    } else {
+      // Otherwise show scanner selection modal
+      handleOpenScannerModal();
+    }
+  };
+
+  const handleScanFromModal = async () => {
+    if (!selectedScanner) return;
+    setShowScannerModal(false);
+    handleScanWithScanner(selectedScanner);
+  };
+
+  const handleSetDefaultScanner = (scannerId: string) => {
+    setDefaultScanner(scannerId);
+    localStorage.setItem('defaultScanner', scannerId);
+  };
+
+  const handleClearDefaultScanner = () => {
+    setDefaultScanner(null);
+    localStorage.removeItem('defaultScanner');
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -175,13 +269,13 @@ function ScanContent() {
                       isComplete
                         ? 'bg-green-500 text-white'
                         : isActive
-                        ? 'bg-[#1e3a5f] text-white'
+                        ? 'bg-[#002d73] text-white'
                         : 'bg-gray-200 text-gray-500'
                     )}
                   >
                     {isComplete ? <CheckCircle size={20} /> : index + 1}
                   </div>
-                  <span className={cn('text-xs mt-1', isActive ? 'text-[#1e3a5f] font-medium' : 'text-gray-500')}>
+                  <span className={cn('text-xs mt-1', isActive ? 'text-[#002d73] font-medium' : 'text-gray-500')}>
                     {label}
                   </span>
                 </div>
@@ -270,7 +364,7 @@ function ScanContent() {
             <CardBody className="space-y-4">
               <div className="bg-blue-50 rounded-lg p-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-[#1e3a5f] rounded-full flex items-center justify-center">
+                  <div className="w-16 h-16 bg-[#002d73] rounded-full flex items-center justify-center">
                     <span className="text-white font-bold text-2xl">
                       {patient.firstName.charAt(0)}
                     </span>
@@ -346,7 +440,7 @@ function ScanContent() {
                         className={cn(
                           'p-4 border rounded-lg cursor-pointer transition-colors',
                           selectedVisit === visit.id
-                            ? 'border-[#1e3a5f] bg-blue-50'
+                            ? 'border-[#002d73] bg-blue-50'
                             : 'hover:bg-gray-50'
                         )}
                         onClick={() => setSelectedVisit(visit.id)}
@@ -389,35 +483,51 @@ function ScanContent() {
                   <CardBody className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       {/* Scan Button */}
-                      <button
-                        onClick={handleScan}
-                        disabled={isScanning}
-                        className={cn(
-                          'p-8 border-2 border-dashed rounded-lg text-center transition-colors',
-                          isScanning
-                            ? 'border-[#1e3a5f] bg-blue-50'
-                            : 'border-gray-300 hover:border-[#1e3a5f] hover:bg-gray-50'
+                      <div className="space-y-2">
+                        <button
+                          onClick={handleScanClick}
+                          disabled={isScanning}
+                          className={cn(
+                            'w-full p-8 border-2 border-dashed rounded-lg text-center transition-colors',
+                            isScanning
+                              ? 'border-[#002d73] bg-blue-50'
+                              : 'border-gray-300 hover:border-[#002d73] hover:bg-gray-50'
+                          )}
+                        >
+                          {isScanning ? (
+                            <>
+                              <Loader2 size={48} className="mx-auto mb-3 text-[#002d73] animate-spin" />
+                              <p className="font-medium text-[#002d73]">กำลังสแกน...</p>
+                              <p className="text-sm text-gray-500">
+                                {currentScanner ? currentScanner.name : 'กรุณารอสักครู่'}
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <ScanLine size={48} className="mx-auto mb-3 text-gray-400" />
+                              <p className="font-medium text-gray-700">สแกนเอกสาร</p>
+                              <p className="text-sm text-gray-500">
+                                {currentScanner ? currentScanner.name : 'กดเพื่อเลือกเครื่องสแกน'}
+                              </p>
+                            </>
+                          )}
+                        </button>
+                        {/* Scanner settings link */}
+                        {!isScanning && (
+                          <button
+                            onClick={handleOpenScannerModal}
+                            className="w-full flex items-center justify-center gap-1 text-sm text-gray-500 hover:text-[#002d73] transition-colors"
+                          >
+                            <Settings2 size={14} />
+                            {currentScanner ? 'เปลี่ยนเครื่องสแกน' : 'ตั้งค่าเครื่องสแกน'}
+                          </button>
                         )}
-                      >
-                        {isScanning ? (
-                          <>
-                            <Loader2 size={48} className="mx-auto mb-3 text-[#1e3a5f] animate-spin" />
-                            <p className="font-medium text-[#1e3a5f]">กำลังสแกน...</p>
-                            <p className="text-sm text-gray-500">กรุณารอสักครู่</p>
-                          </>
-                        ) : (
-                          <>
-                            <ScanLine size={48} className="mx-auto mb-3 text-gray-400" />
-                            <p className="font-medium text-gray-700">สแกนเอกสาร</p>
-                            <p className="text-sm text-gray-500">กดเพื่อสแกนจากเครื่อง MFP</p>
-                          </>
-                        )}
-                      </button>
+                      </div>
 
                       {/* Upload Button */}
                       <button
                         onClick={() => fileInputRef.current?.click()}
-                        className="p-8 border-2 border-dashed rounded-lg text-center border-gray-300 hover:border-[#1e3a5f] hover:bg-gray-50 transition-colors"
+                        className="p-8 border-2 border-dashed rounded-lg text-center border-gray-300 hover:border-[#002d73] hover:bg-gray-50 transition-colors"
                       >
                         <Upload size={48} className="mx-auto mb-3 text-gray-400" />
                         <p className="font-medium text-gray-700">อัปโหลดไฟล์</p>
@@ -443,7 +553,7 @@ function ScanContent() {
                             className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                           >
                             <div className="flex items-center gap-3">
-                              <FileText size={20} className="text-[#1e3a5f]" />
+                              <FileText size={20} className="text-[#002d73]" />
                               <span>{file.name}</span>
                               <span className="text-sm text-gray-500">
                                 ({(file.size / 1024).toFixed(1)} KB)
@@ -470,18 +580,49 @@ function ScanContent() {
                       <h2 className="text-lg font-semibold text-gray-800">เลือกหมวดหมู่เอกสาร</h2>
                     </CardHeader>
                     <CardBody>
-                      <Select
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                        options={[
-                          { value: '', label: '-- เลือกหมวดหมู่ --' },
-                          ...categories
-                            .filter((c) => c.isActive)
-                            .map((c) => ({ value: c.id, label: c.name })),
-                        ]}
-                      />
+                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                        {categories.filter((c) => c.isActive).map((category) => {
+                          const isSelected = selectedCategory === category.id;
 
-                      <div className="flex gap-3 mt-4">
+                          const borderColorMap: Record<string, string> = {
+                            'cat-1': 'border-red-200 hover:border-red-400',
+                            'cat-2': 'border-purple-200 hover:border-purple-400',
+                            'cat-3': 'border-blue-200 hover:border-blue-400',
+                            'cat-4': 'border-green-200 hover:border-green-400',
+                            'cat-5': 'border-orange-200 hover:border-orange-400',
+                            'cat-6': 'border-pink-200 hover:border-pink-400',
+                            'cat-7': 'border-gray-200 hover:border-gray-400',
+                          };
+
+                          return (
+                            <button
+                              key={category.id}
+                              onClick={() => setSelectedCategory(category.id)}
+                              className={cn(
+                                'p-4 border-2 rounded-xl text-center transition-all active:scale-95',
+                                isSelected
+                                  ? 'border-[#002d73] bg-blue-50 ring-2 ring-[#002d73] ring-offset-2'
+                                  : `bg-white ${borderColorMap[category.id] || 'border-gray-200 hover:border-gray-400'}`
+                              )}
+                            >
+                              <div className={cn(
+                                'w-14 h-14 mx-auto mb-2 rounded-full flex items-center justify-center',
+                                isSelected ? 'bg-[#002d73] text-white' : getCategoryColor(category.id)
+                              )}>
+                                {getCategoryIcon(category.id, 28)}
+                              </div>
+                              <p className={cn(
+                                'text-sm font-medium leading-tight',
+                                isSelected ? 'text-[#002d73]' : 'text-gray-700'
+                              )}>
+                                {category.name}
+                              </p>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <div className="flex gap-3 mt-6">
                         <Button
                           onClick={handlePreview}
                           className="flex-1"
@@ -532,11 +673,19 @@ function ScanContent() {
                   <span className="text-gray-500">วันที่รับบริการ:</span>
                   <span className="font-medium">{formatDate(selectedVisitData.visitDate)}</span>
                 </div>
-                <div className="flex justify-between py-2 border-b">
+                <div className="flex justify-between items-center py-2 border-b">
                   <span className="text-gray-500">หมวดเอกสาร:</span>
-                  <span className="font-medium">
-                    {categories.find((c) => c.id === selectedCategory)?.name}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <div className={cn(
+                      'w-8 h-8 rounded-full flex items-center justify-center',
+                      getCategoryColor(selectedCategory)
+                    )}>
+                      {getCategoryIcon(selectedCategory, 16)}
+                    </div>
+                    <span className="font-medium">
+                      {categories.find((c) => c.id === selectedCategory)?.name}
+                    </span>
+                  </div>
                 </div>
                 <div className="flex justify-between py-2 border-b">
                   <span className="text-gray-500">จำนวนไฟล์:</span>
@@ -600,6 +749,102 @@ function ScanContent() {
             <Button variant="outline" onClick={() => setShowConfirmModal(false)}>
               ยกเลิก
             </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Scanner Selection Modal */}
+      <Modal
+        isOpen={showScannerModal}
+        onClose={() => {
+          setShowScannerModal(false);
+          setSelectedScanner(null);
+        }}
+        title="ตั้งค่าเครื่องสแกน"
+        size="lg"
+      >
+        <div className="space-y-4">
+          <p className="text-gray-600 text-sm">
+            เลือกเครื่องสแกนที่ต้องการใช้งานเป็นค่าเริ่มต้น
+          </p>
+
+          <div className="space-y-2 max-h-80 overflow-y-auto">
+            {availableScanners.map((scanner) => (
+              <div
+                key={scanner.id}
+                onClick={() => scanner.status === 'online' && setSelectedScanner(scanner.id)}
+                className={cn(
+                  'p-4 border rounded-lg transition-colors',
+                  scanner.status === 'offline'
+                    ? 'bg-gray-50 opacity-60 cursor-not-allowed'
+                    : selectedScanner === scanner.id
+                    ? 'border-[#002d73] bg-blue-50 cursor-pointer'
+                    : 'hover:bg-gray-50 cursor-pointer'
+                )}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={cn(
+                      'w-10 h-10 rounded-full flex items-center justify-center',
+                      scanner.status === 'online' ? 'bg-[#002d73]' : 'bg-gray-300'
+                    )}>
+                      <ScanLine size={20} className="text-white" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{scanner.name}</span>
+                        {defaultScanner === scanner.id && (
+                          <Badge variant="info" className="text-xs">ค่าเริ่มต้น</Badge>
+                        )}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {scanner.location} • {scanner.ip}
+                      </div>
+                    </div>
+                  </div>
+                  <Badge variant={scanner.status === 'online' ? 'success' : 'default'}>
+                    {scanner.status === 'online' ? 'พร้อมใช้งาน' : 'ออฟไลน์'}
+                  </Badge>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-3 pt-2">
+            <div className="flex gap-3">
+              <Button
+                onClick={() => {
+                  if (selectedScanner) {
+                    handleSetDefaultScanner(selectedScanner);
+                    setShowScannerModal(false);
+                  }
+                }}
+                className="flex-1"
+                disabled={!selectedScanner}
+              >
+                บันทึกเป็นค่าเริ่มต้น
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowScannerModal(false);
+                  setSelectedScanner(null);
+                }}
+              >
+                ยกเลิก
+              </Button>
+            </div>
+            {defaultScanner && (
+              <button
+                onClick={() => {
+                  handleClearDefaultScanner();
+                  setShowScannerModal(false);
+                }}
+                className="text-sm text-red-600 hover:underline"
+              >
+                ล้างค่าเริ่มต้น (เลือกเครื่องทุกครั้ง)
+              </button>
+            )}
           </div>
         </div>
       </Modal>

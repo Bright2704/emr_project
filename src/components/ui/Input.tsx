@@ -22,8 +22,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           id={inputId}
           className={cn(
-            'w-full px-4 py-2 border rounded-lg text-gray-900 placeholder-gray-400 transition-colors',
-            'focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent',
+            'w-full px-3 py-2 border rounded-lg text-gray-900 placeholder-gray-400',
+            'focus:outline-none focus:ring-2 focus:ring-[#002d73] focus:border-transparent',
             error ? 'border-red-500' : 'border-gray-300',
             className
           )}
@@ -59,8 +59,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           id={selectId}
           className={cn(
-            'w-full px-4 py-2 border rounded-lg text-gray-900 bg-white transition-colors',
-            'focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent',
+            'w-full px-3 py-2 border rounded-lg text-gray-900 bg-white',
+            'focus:outline-none focus:ring-2 focus:ring-[#002d73] focus:border-transparent',
             error ? 'border-red-500' : 'border-gray-300',
             className
           )}

@@ -135,7 +135,7 @@ export default function UsersPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-[#1e3a5f] rounded-full flex items-center justify-center">
+                        <div className="w-8 h-8 bg-[#002d73] rounded-full flex items-center justify-center">
                           <span className="text-white font-medium text-sm">
                             {user.fullName.charAt(0)}
                           </span>
@@ -230,7 +230,7 @@ export default function UsersPage() {
               label="เลขใบประกอบวิชาชีพ"
               value={newUser.professionalNo}
               onChange={(e) => setNewUser({ ...newUser, professionalNo: e.target.value })}
-              placeholder="เช่น ว.12345"
+              placeholder="เช่น ว.12345 หรือ 4567890123"
             />
 
             <Select

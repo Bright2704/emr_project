@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Plus } from 'lucide-react';
 import { useAuthStore } from '@/store';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -30,7 +31,6 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
 
-    // Simulate network delay
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     const result = login(professionalNo, pin);
@@ -46,29 +46,29 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1e3a5f] to-[#2d4a6f] flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-sm overflow-hidden">
         {/* Header */}
-        <div className="bg-[#1e3a5f] px-8 py-6 text-center">
-          <div className="w-16 h-16 bg-white rounded-xl mx-auto mb-4 flex items-center justify-center">
-            <span className="text-[#1e3a5f] text-3xl font-bold">+</span>
+        <div className="bg-[#002d73] px-6 py-5 text-center">
+          <div className="w-14 h-14 bg-white rounded-lg mx-auto mb-3 flex items-center justify-center">
+            <Plus className="w-8 h-8 text-[#002d73]" strokeWidth={3} />
           </div>
-          <h1 className="text-white text-xl font-bold">EMR SCAN VIEWER</h1>
+          <h1 className="text-white text-lg font-bold">EMR SCAN VIEWER</h1>
           <p className="text-blue-200 text-sm mt-1">ระบบจัดเก็บและเรียกดูเอกสารสแกนผู้ป่วย</p>
         </div>
 
         {/* Content */}
-        <div className="p-8">
+        <div className="p-6">
           {step === 'username' ? (
-            <form onSubmit={handleUsernameSubmit} className="space-y-6">
-              <div className="text-center mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">เข้าสู่ระบบ</h2>
-                <p className="text-gray-500 text-sm mt-1">กรอกเลขใบประกอบวิชาชีพของคุณ</p>
+            <form onSubmit={handleUsernameSubmit} className="space-y-4">
+              <div className="text-center mb-4">
+                <h2 className="text-lg font-semibold text-gray-800">เข้าสู่ระบบ</h2>
+                <p className="text-gray-500 text-sm">กรอกเลขใบประกอบวิชาชีพของคุณ</p>
               </div>
 
               <Input
                 label="เลขใบประกอบวิชาชีพ"
-                placeholder="เช่น ว.12345 หรือ พย.67890"
+                placeholder="เช่น ว.12345 หรือ 4567890123"
                 value={professionalNo}
                 onChange={(e) => setProfessionalNo(e.target.value)}
                 error={error}
@@ -78,25 +78,21 @@ export default function LoginPage() {
                 ถัดไป
               </Button>
 
-              <div className="text-center">
-                <p className="text-sm text-gray-500">
-                  ทดสอบด้วย: <span className="font-mono text-gray-700">ว.12345</span> (แพทย์)
-                </p>
-                <p className="text-sm text-gray-500">
-                  หรือ <span className="font-mono text-gray-700">ADMIN001</span> (Admin)
+              <div className="bg-gray-50 rounded-lg p-3 text-center">
+                <p className="text-xs text-gray-500 mb-1">ทดสอบระบบด้วยบัญชี:</p>
+                <p className="text-xs text-gray-600">
+                  <span className="font-mono">ว.12345</span> (แพทย์) |
+                  <span className="font-mono"> 4567890123</span> (พยาบาล) |
+                  <span className="font-mono"> ADMIN001</span> (Admin)
                 </p>
               </div>
             </form>
           ) : (
-            <div className="space-y-6">
-              <div className="text-center mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">กรอก PIN</h2>
-                <p className="text-gray-500 text-sm mt-1">
-                  กรอก PIN 6 หลักของคุณ
-                </p>
-                <p className="text-sm text-[#1e3a5f] font-medium mt-2">
-                  {professionalNo}
-                </p>
+            <div className="space-y-4">
+              <div className="text-center mb-4">
+                <h2 className="text-lg font-semibold text-gray-800">กรอก PIN</h2>
+                <p className="text-gray-500 text-sm">กรอก PIN 6 หลักของคุณ</p>
+                <p className="text-sm text-[#002d73] font-medium mt-2">{professionalNo}</p>
               </div>
 
               <PinInput
@@ -105,36 +101,38 @@ export default function LoginPage() {
                 disabled={loading}
               />
 
-              <div className="text-center space-y-3">
-                <p className="text-sm text-gray-500">
-                  PIN สำหรับทดสอบ: <span className="font-mono text-gray-700">123456</span>
+              <div className="text-center space-y-2">
+                <p className="text-xs text-gray-500">
+                  PIN สำหรับทดสอบ: <span className="font-mono font-bold">123456</span>
                 </p>
 
-                <Link
-                  href="/reset-pin"
-                  className="block text-sm text-[#1e3a5f] hover:underline"
-                >
-                  ลืม PIN?
-                </Link>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStep('username');
-                    setError('');
-                  }}
-                  className="text-sm text-gray-500 hover:text-gray-700"
-                >
-                  ← กลับ
-                </button>
+                <div className="flex items-center justify-center gap-3">
+                  <Link
+                    href="/reset-pin"
+                    className="text-sm text-[#002d73] hover:underline"
+                  >
+                    ลืม PIN?
+                  </Link>
+                  <span className="text-gray-300">|</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStep('username');
+                      setError('');
+                    }}
+                    className="text-sm text-gray-500 hover:text-gray-700"
+                  >
+                    ← กลับ
+                  </button>
+                </div>
               </div>
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="bg-gray-50 px-8 py-4 text-center border-t">
-          <p className="text-xs text-gray-500">
+        <div className="bg-gray-50 px-6 py-3 text-center border-t border-gray-100">
+          <p className="text-xs text-gray-400">
             EMR Scan Viewer v1.0 • โรงพยาบาลตัวอย่าง
           </p>
         </div>

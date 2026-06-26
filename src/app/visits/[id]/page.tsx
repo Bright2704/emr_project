@@ -74,7 +74,7 @@ export default function VisitDetailPage({ params }: { params: Promise<{ id: stri
                   <Badge variant={visit.visitType === 'OPD' ? 'info' : 'warning'} className="text-sm">
                     {visit.visitType === 'OPD' ? 'ผู้ป่วยนอก' : 'ผู้ป่วยใน'}
                   </Badge>
-                  <span className="font-mono text-xl font-bold text-[#1e3a5f]">
+                  <span className="font-mono text-xl font-bold text-[#002d73]">
                     {visit.visitNo}
                   </span>
                 </div>
@@ -142,7 +142,7 @@ export default function VisitDetailPage({ params }: { params: Promise<{ id: stri
                     <TableRow key={doc.id}>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <FileText size={20} className="text-[#1e3a5f]" />
+                          <FileText size={20} className="text-[#002d73]" />
                           <div>
                             <div className="font-medium">{doc.filePath.split('/').pop()}</div>
                             <div className="text-sm text-gray-500 uppercase">{doc.fileType}</div>
@@ -210,7 +210,7 @@ export default function VisitDetailPage({ params }: { params: Promise<{ id: stri
                       key={category.id}
                       className={`p-4 border rounded-lg ${count > 0 ? 'bg-blue-50 border-blue-200' : 'bg-gray-50'}`}
                     >
-                      <div className={`text-2xl font-bold ${count > 0 ? 'text-[#1e3a5f]' : 'text-gray-400'}`}>
+                      <div className={`text-2xl font-bold ${count > 0 ? 'text-[#002d73]' : 'text-gray-400'}`}>
                         {count}
                       </div>
                       <div className="text-sm text-gray-600">{category.name}</div>

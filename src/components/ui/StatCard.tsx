@@ -22,23 +22,33 @@ export function StatCard({
 }: StatCardProps) {
   const variantStyles = {
     default: {
-      iconColor: 'text-[#1e3a5f]',
-      progressColor: 'bg-[#1e3a5f]',
+      iconBg: 'bg-[#002d73]',
+      iconColor: 'text-white',
+      valueColor: 'text-[#002d73]',
+      progressColor: 'bg-[#002d73]',
     },
     success: {
-      iconColor: 'text-green-600',
+      iconBg: 'bg-green-600',
+      iconColor: 'text-white',
+      valueColor: 'text-green-600',
       progressColor: 'bg-green-500',
     },
     warning: {
-      iconColor: 'text-orange-500',
-      progressColor: 'bg-orange-500',
+      iconBg: 'bg-yellow-500',
+      iconColor: 'text-white',
+      valueColor: 'text-yellow-600',
+      progressColor: 'bg-yellow-500',
     },
     danger: {
-      iconColor: 'text-red-600',
+      iconBg: 'bg-red-600',
+      iconColor: 'text-white',
+      valueColor: 'text-red-600',
       progressColor: 'bg-red-500',
     },
     info: {
-      iconColor: 'text-blue-600',
+      iconBg: 'bg-blue-600',
+      iconColor: 'text-white',
+      valueColor: 'text-blue-600',
       progressColor: 'bg-blue-500',
     },
   };
@@ -48,31 +58,31 @@ export function StatCard({
   return (
     <div
       className={cn(
-        'bg-white rounded-lg border border-gray-200 p-5 transition-shadow',
-        onClick && 'cursor-pointer hover:shadow-md'
+        'bg-white rounded-lg border border-gray-200 p-5',
+        onClick && 'cursor-pointer hover:shadow-md transition-shadow'
       )}
       onClick={onClick}
     >
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-gray-600 text-sm">{title}</p>
+          <p className="text-gray-500 text-sm">{title}</p>
           <div className="mt-2 flex items-baseline gap-1">
-            <span className={cn('text-3xl font-bold', variantStyles[variant].iconColor)}>
+            <span className={cn('text-3xl font-bold', variantStyles[variant].valueColor)}>
               {value}
             </span>
-            {subtitle && <span className="text-gray-500 text-sm">{subtitle}</span>}
+            {subtitle && <span className="text-gray-400 text-sm">{subtitle}</span>}
           </div>
         </div>
-        <div className={cn('p-2', variantStyles[variant].iconColor)}>
-          <IconComponent size={24} />
+        <div className={cn('p-2 rounded-lg', variantStyles[variant].iconBg)}>
+          <IconComponent size={20} className={variantStyles[variant].iconColor} />
         </div>
       </div>
 
       {progress !== undefined && (
         <div className="mt-4">
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-gray-100 rounded-full h-2">
             <div
-              className={cn('h-2 rounded-full transition-all', variantStyles[variant].progressColor)}
+              className={cn('h-2 rounded-full', variantStyles[variant].progressColor)}
               style={{ width: `${Math.min(progress, 100)}%` }}
             />
           </div>

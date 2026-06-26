@@ -28,7 +28,7 @@ const mockUsers: User[] = [
   },
   {
     id: 'user-2',
-    professionalNo: 'พย.67890',
+    professionalNo: '4567890123',
     role: 'nurse',
     fullName: 'พยาบาล วิภา รักษาดี',
     phone: '0899876543',
@@ -187,13 +187,23 @@ const mockDocuments: ScanDocument[] = [
   },
 ];
 
+// Session timeout settings (in milliseconds)
+const PIN_TIMEOUT = 30 * 60 * 1000; // 30 minutes - require PIN
+const FULL_LOGOUT_TIMEOUT = 60 * 60 * 1000; // 1 hour - require full re-login
+
 // Auth Store
 interface AuthState {
   currentUser: User | null;
   isAuthenticated: boolean;
+  lastActivityAt: number | null;
+  sessionLockType: 'none' | 'pin' | 'full'; // none = active, pin = need PIN, full = need full login
   login: (professionalNo: string, pin: string) => { success: boolean; error?: string; needSetup?: boolean };
   logout: () => void;
   setupPin: (pin: string) => void;
+  updateActivity: () => void;
+  checkSessionTimeout: () => 'none' | 'pin' | 'full';
+  unlockWithPin: (pin: string) => { success: boolean; error?: string };
+  lockSession: (type: 'pin' | 'full') => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -201,6 +211,9 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       currentUser: null,
       isAuthenticated: false,
+      lastActivityAt: null,
+      sessionLockType: 'none',
+
       login: (professionalNo: string, pin: string) => {
         const user = mockUsers.find((u) => u.professionalNo === professionalNo);
         if (!user) {
@@ -226,15 +239,90 @@ export const useAuthStore = create<AuthState>()(
         }
         user.failedAttempts = 0;
         user.lastFailedAt = null;
-        set({ currentUser: user, isAuthenticated: true });
+        set({
+          currentUser: user,
+          isAuthenticated: true,
+          lastActivityAt: Date.now(),
+          sessionLockType: 'none',
+        });
         return { success: true };
       },
-      logout: () => set({ currentUser: null, isAuthenticated: false }),
+
+      logout: () => set({
+        currentUser: null,
+        isAuthenticated: false,
+        lastActivityAt: null,
+        sessionLockType: 'none',
+      }),
+
       setupPin: (pin: string) => {
         const { currentUser } = get();
         if (currentUser) {
           currentUser.pinSet = true;
-          set({ currentUser, isAuthenticated: true });
+          set({
+            currentUser,
+            isAuthenticated: true,
+            lastActivityAt: Date.now(),
+            sessionLockType: 'none',
+          });
+        }
+      },
+
+      updateActivity: () => {
+        const { isAuthenticated, sessionLockType } = get();
+        if (isAuthenticated && sessionLockType === 'none') {
+          set({ lastActivityAt: Date.now() });
+        }
+      },
+
+      checkSessionTimeout: () => {
+        const { lastActivityAt, isAuthenticated, sessionLockType } = get();
+
+        if (!isAuthenticated || !lastActivityAt) return 'none';
+        if (sessionLockType !== 'none') return sessionLockType;
+
+        const now = Date.now();
+        const elapsed = now - lastActivityAt;
+
+        if (elapsed >= FULL_LOGOUT_TIMEOUT) {
+          set({ sessionLockType: 'full' });
+          return 'full';
+        } else if (elapsed >= PIN_TIMEOUT) {
+          set({ sessionLockType: 'pin' });
+          return 'pin';
+        }
+
+        return 'none';
+      },
+
+      unlockWithPin: (pin: string) => {
+        const { currentUser } = get();
+        if (!currentUser) {
+          return { success: false, error: 'ไม่พบข้อมูลผู้ใช้' };
+        }
+
+        // Mock PIN check
+        if (pin !== '123456') {
+          return { success: false, error: 'PIN ไม่ถูกต้อง' };
+        }
+
+        set({
+          sessionLockType: 'none',
+          lastActivityAt: Date.now(),
+        });
+        return { success: true };
+      },
+
+      lockSession: (type: 'pin' | 'full') => {
+        if (type === 'full') {
+          set({
+            currentUser: null,
+            isAuthenticated: false,
+            lastActivityAt: null,
+            sessionLockType: 'none',
+          });
+        } else {
+          set({ sessionLockType: type });
         }
       },
     }),

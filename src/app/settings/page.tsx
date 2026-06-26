@@ -20,7 +20,6 @@ export default function SettingsPage() {
   const [addCategoryName, setAddCategoryName] = useState('');
 
   // System settings state
-  const [sessionTimeout, setSessionTimeout] = useState('30');
   const [scannerIP, setScannerIP] = useState('192.168.1.100');
 
   const handleSaveSettings = () => {
@@ -130,19 +129,22 @@ export default function SettingsPage() {
             <h2 className="text-lg font-semibold text-gray-800">ตั้งค่าทั่วไป</h2>
           </CardHeader>
           <CardBody className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <Select
-                label="Session Timeout (นาที)"
-                value={sessionTimeout}
-                onChange={(e) => setSessionTimeout(e.target.value)}
-                options={[
-                  { value: '15', label: '15 นาที' },
-                  { value: '30', label: '30 นาที' },
-                  { value: '60', label: '60 นาที' },
-                  { value: '120', label: '120 นาที' },
-                ]}
-              />
+            {/* Session Timeout Info */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h3 className="font-medium text-blue-800 mb-2">การหมดเวลาอัตโนมัติ</h3>
+              <div className="space-y-2 text-sm text-blue-700">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-yellow-500 rounded-full" />
+                  <span><strong>30 นาที</strong> ไม่ใช้งาน → ต้องกรอก PIN ใหม่</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-red-500 rounded-full" />
+                  <span><strong>1 ชั่วโมง</strong> ไม่ใช้งาน → ต้องเข้าสู่ระบบใหม่</span>
+                </div>
+              </div>
+            </div>
 
+            <div className="grid grid-cols-2 gap-4">
               <Input
                 label="IP Scanner เครื่อง MFP"
                 value={scannerIP}
